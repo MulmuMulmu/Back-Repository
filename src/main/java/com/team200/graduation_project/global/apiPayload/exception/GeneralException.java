@@ -1,6 +1,6 @@
 package com.team200.graduation_project.global.apiPayload.exception;
 
-import com.team200.graduation_project.global.apiPayload.code.BaseErrorCode;
+import com.team200.graduation_project.global.apiPayload.code.GeneralErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,6 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GeneralException extends RuntimeException {
 
-    private final BaseErrorCode errorCode;
+    private final GeneralErrorCode status;
+
+    @Override
+    public String getMessage() {
+        return status.getMessage();
+    }
 
 }

@@ -1,27 +1,29 @@
 package com.team200.graduation_project.global.apiPayload.exception;
 
+import com.team200.graduation_project.global.apiPayload.code.GeneralErrorCode;
+import com.team200.graduation_project.global.apiPayload.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
+    // 우리가 발생시킨 커스텀 예외 처리
+    @ExceptionHandler(GeneralException.class)
+    public ResponseEntity<ApiResponse<String>> handleCustomException(GeneralException e) {
+        GeneralErrorCode status = e.getStatus();
+        return ResponseEntity
+                .status(status.getStatus())
+                .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));
+    }
 
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-
-        return ResponseEntity.badRequest().body(errors);
+    // 그 외 예상치 못한 500 에러 처리
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<String>> handleAllException(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.onFailure("COMMON500", "서버 내부 오류가 발생했습니다: " + e.getMessage()));
     }
 }
