@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 우리가 발생시킨 커스텀 예외 처리
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ApiResponse<String>> handleCustomException(GeneralException e) {
         GeneralErrorCode status = e.getStatus();
@@ -19,7 +18,6 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));
     }
 
-    // 그 외 예상치 못한 500 에러 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<String>> handleAllException(Exception e) {
         return ResponseEntity
