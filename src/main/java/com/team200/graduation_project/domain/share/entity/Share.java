@@ -1,0 +1,40 @@
+package com.team200.graduation_project.domain.share.entity;
+
+import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
+import com.team200.graduation_project.domain.user.entity.User;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "`Share`")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Share {
+    @Id
+    private Long shareId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userIngredientId")
+    private UserIngredient userIngredient;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
+
+    @Column(length = 20)
+    private String status;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
+}
