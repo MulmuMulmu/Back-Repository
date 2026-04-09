@@ -34,6 +34,9 @@ public class Share {
     @Column(length = 20)
     private String status;
 
+    @Column(length = 20)
+    private String isView;
+
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
