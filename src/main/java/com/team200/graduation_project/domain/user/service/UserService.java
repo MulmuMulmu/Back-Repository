@@ -119,7 +119,7 @@ public class UserService {
         }
 
         User user = userRepository
-                .findByIdIs(request.getId())
+                .findByIdIsAndDeletedAtIsNull(request.getId())
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
 
         if (!StringUtils.hasText(user.getPassword())
@@ -139,7 +139,7 @@ public class UserService {
 
         String kakaoId = kakaoUserIdFromAuthorizationCode(request.getAuthorizationCode());
         User user = userRepository
-                .findByIdIs(kakaoId)
+                .findByIdIsAndDeletedAtIsNull(kakaoId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
 
         JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getId());
@@ -179,6 +179,19 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public String deleteAccount(String authorizationHeader) {
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            user.softDelete();
+            return "회원탈퇴가 완료되었습니다.";
+        } catch (UserException | GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_DELETION_FAILED);
+        }
+    }
+
     private User findUserFromAuthorizationHeader(String authorizationHeader) {
         String token = extractAccessToken(authorizationHeader);
         if (!jwtTokenProvider.validateToken(token)) {
@@ -186,7 +199,7 @@ public class UserService {
         }
 
         String userId = jwtTokenProvider.getSubject(token);
-        return userRepository.findByIdIs(userId)
+        return userRepository.findByIdIsAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
     }
 

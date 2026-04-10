@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,11 +36,17 @@ public class User {
     @Column(length = 20)
     private Boolean firstLogin;
 
+    private LocalDateTime deletedAt;
+
     public void updateFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;
     }
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }

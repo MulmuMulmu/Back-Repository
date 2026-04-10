@@ -9,6 +9,7 @@ import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
 import com.team200.graduation_project.domain.user.service.UserService;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -53,6 +54,13 @@ public class UserController {
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
         return ApiResponse.onSuccess(userService.logout(authorizationHeader));
+    }
+
+    @DeleteMapping("/deletion")
+    public ApiResponse<String> deleteAccount(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        return ApiResponse.onSuccess(userService.deleteAccount(authorizationHeader));
     }
 
     @PutMapping("/password")
