@@ -20,36 +20,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerDocs {
 
     private final UserService userService;
 
     @PostMapping("/signup/idCheck")
+    @Override
     public ApiResponse<String> checkIdDuplicated(@RequestBody UserIdCheckRequest request) {
         return ApiResponse.onSuccess(userService.checkIdDuplicated(request.getId()));
     }
 
     @PostMapping("/signup")
+    @Override
     public ApiResponse<String> signup(@RequestBody UserSignupRequest request) {
         return ApiResponse.onSuccess(userService.signup(request));
     }
 
     @PostMapping("/signup/kakao")
+    @Override
     public ApiResponse<String> signupWithKakao(@RequestBody KakaoSignupRequest request) {
         return ApiResponse.onSuccess(userService.signupWithKakao(request));
     }
 
     @PostMapping("/login")
+    @Override
     public ApiResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         return ApiResponse.onSuccess(userService.login(request));
     }
 
     @PostMapping("/login/kakao")
+    @Override
     public ApiResponse<LoginResponse> loginWithKakao(@RequestBody KakaoSignupRequest request) {
         return ApiResponse.onSuccess(userService.loginWithKakao(request));
     }
 
     @PostMapping("/logout")
+    @Override
     public ApiResponse<String> logout(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
@@ -57,6 +63,7 @@ public class UserController {
     }
 
     @DeleteMapping("/deletion")
+    @Override
     public ApiResponse<String> deleteAccount(
             @RequestHeader("Authorization") String authorizationHeader
     ) {
@@ -64,6 +71,7 @@ public class UserController {
     }
 
     @PutMapping("/password")
+    @Override
     public ApiResponse<String> changePassword(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody ChangePasswordRequest request

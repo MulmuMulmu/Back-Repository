@@ -16,17 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/ingredient")
 @RequiredArgsConstructor
-public class IngredientController {
+public class IngredientController implements IngredientControllerDocs {
 
     private final IngredientService ingredientService;
     private final IngredientFirstLoginService ingredientFirstLoginService;
 
     @GetMapping("/search")
+    @Override
     public ApiResponse<?> searchIngredients(@RequestParam String keyword) {
         return ApiResponse.onSuccess(ingredientService.searchIngredients(keyword));
     }
 
     @PostMapping("/first/login")
+    @Override
     public ApiResponse<String> saveExtraInfo(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody ExtraInfoRequest request
