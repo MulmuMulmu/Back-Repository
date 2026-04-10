@@ -1,5 +1,6 @@
 package com.team200.graduation_project.domain.user.service;
 
+import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
@@ -8,7 +9,10 @@ import com.team200.graduation_project.domain.user.entity.User;
 import com.team200.graduation_project.domain.user.exception.UserErrorCode;
 import com.team200.graduation_project.domain.user.exception.UserException;
 import com.team200.graduation_project.domain.user.repository.UserRepository;
+import com.team200.graduation_project.global.apiPayload.code.GeneralErrorCode;
+import com.team200.graduation_project.global.apiPayload.exception.GeneralException;
 import com.team200.graduation_project.global.jwt.JwtTokenPair;
+import com.team200.graduation_project.global.jwt.JwtTokenProvider;
 import com.team200.graduation_project.global.jwt.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +26,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenService jwtTokenService;
 
     public String checkIdDuplicated(String id) {
@@ -139,5 +144,62 @@ public class UserService {
 
         JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getId());
         return new LoginResponse(tokenPair.accessToken(), user.getFirstLogin());
+    }
+
+    @Transactional
+    public String changePassword(String authorizationHeader, ChangePasswordRequest request) {
+        if (request == null
+                || !StringUtils.hasText(request.getOldPassword())
+                || !StringUtils.hasText(request.getNewPassword())) {
+            throw new UserException(UserErrorCode.USER_BAD_REQUEST);
+        }
+
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+
+            if (!StringUtils.hasText(user.getPassword())
+                    || !passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                throw new UserException(UserErrorCode.USER_PASSWORD_MISMATCH);
+            }
+
+            user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+            return "비밀번호가 성공적으로 변경되었습니다.";
+        } catch (UserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_PASSWORD_CHANGE_FAILED);
+        }
+    }
+
+    public String logout(String authorizationHeader) {
+        try {
+            return "로그아웃 완료되었습니다.";
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_LOGOUT_FAILED);
+        }
+    }
+
+    private User findUserFromAuthorizationHeader(String authorizationHeader) {
+        String token = extractAccessToken(authorizationHeader);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new GeneralException(GeneralErrorCode.UNAUTHORIZED);
+        }
+
+        String userId = jwtTokenProvider.getSubject(token);
+        return userRepository.findByIdIs(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+    }
+
+    private String extractAccessToken(String authorizationHeader) {
+        if (!StringUtils.hasText(authorizationHeader)) {
+            throw new GeneralException(GeneralErrorCode.UNAUTHORIZED);
+        }
+
+        String bearerPrefix = "Bearer ";
+        if (authorizationHeader.startsWith(bearerPrefix)) {
+            return authorizationHeader.substring(bearerPrefix.length()).trim();
+        }
+
+        return authorizationHeader.trim();
     }
 }

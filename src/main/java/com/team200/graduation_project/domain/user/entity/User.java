@@ -38,4 +38,8 @@ public class User {
     public void updateFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }

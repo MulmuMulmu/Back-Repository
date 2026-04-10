@@ -1,5 +1,6 @@
 package com.team200.graduation_project.domain.user.controller;
 
+import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserIdCheckRequest;
@@ -10,6 +11,8 @@ import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,5 +46,20 @@ public class UserController {
     @PostMapping("/login/kakao")
     public ApiResponse<LoginResponse> loginWithKakao(@RequestBody KakaoSignupRequest request) {
         return ApiResponse.onSuccess(userService.loginWithKakao(request));
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) {
+        return ApiResponse.onSuccess(userService.logout(authorizationHeader));
+    }
+
+    @PutMapping("/password")
+    public ApiResponse<String> changePassword(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        return ApiResponse.onSuccess(userService.changePassword(authorizationHeader, request));
     }
 }
