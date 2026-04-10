@@ -1,5 +1,7 @@
 package com.team200.graduation_project.global.apiPayload.exception;
 
+import com.team200.graduation_project.domain.user.exception.UserErrorCode;
+import com.team200.graduation_project.domain.user.exception.UserException;
 import com.team200.graduation_project.global.apiPayload.code.GeneralErrorCode;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ApiResponse<String>> handleCustomException(GeneralException e) {
         GeneralErrorCode status = e.getStatus();
+        return ResponseEntity
+                .status(status.getStatus())
+                .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));
+    }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ApiResponse<String>> handleUserException(UserException e) {
+        UserErrorCode status = e.getStatus();
         return ResponseEntity
                 .status(status.getStatus())
                 .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));

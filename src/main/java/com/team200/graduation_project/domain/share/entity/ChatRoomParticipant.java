@@ -3,8 +3,6 @@ package com.team200.graduation_project.domain.share.entity;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
