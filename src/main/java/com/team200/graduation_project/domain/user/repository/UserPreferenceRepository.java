@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface UserPreferenceRepository extends JpaRepository<UserPreference, Long> {
 
     void deleteByUser(User user);
+
+    void deleteByUserAndType(User user, String type);
 }

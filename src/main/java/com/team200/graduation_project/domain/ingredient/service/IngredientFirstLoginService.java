@@ -1,6 +1,8 @@
 package com.team200.graduation_project.domain.ingredient.service;
 
 import com.team200.graduation_project.domain.ingredient.dto.request.ExtraInfoRequest;
+import com.team200.graduation_project.domain.ingredient.dto.request.AllergyUpdateRequest;
+import com.team200.graduation_project.domain.ingredient.dto.request.PreferUpdateRequest;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.user.entity.User;
@@ -12,6 +14,7 @@ import com.team200.graduation_project.global.apiPayload.exception.GeneralExcepti
 import com.team200.graduation_project.global.jwt.JwtTokenProvider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +48,53 @@ public class IngredientFirstLoginService {
         user.updateFirstLogin(false);
 
         return "성공적으로 저장되었습니다.";
+    }
+
+    @Transactional
+    public String updateAllergy(String authorizationHeader, AllergyUpdateRequest request) {
+        if (request == null) {
+            throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
+        }
+
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            userPreferenceRepository.deleteByUserAndType(user, "ALLERGY");
+
+            List<UserPreference> allergies = toUserPreferences(user, request.getNewAllergy(), "ALLERGY");
+            if (!allergies.isEmpty()) {
+                userPreferenceRepository.saveAll(Objects.requireNonNull(allergies));
+            }
+
+            return "알러지 목록이 성공적으로 수정되었습니다.";
+        } catch (GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GeneralException(GeneralErrorCode.ALLERGY_UPDATE_FAILED);
+        }
+    }
+
+    @Transactional
+    public String updatePrefer(String authorizationHeader, PreferUpdateRequest request) {
+        if (request == null || !StringUtils.hasText(request.getType())) {
+            throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
+        }
+
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            String preferenceType = toPreferenceType(request.getType());
+
+            userPreferenceRepository.deleteByUserAndType(user, preferenceType);
+            List<UserPreference> preferences = toUserPreferences(user, request.getNewPrefer(), preferenceType);
+            if (!preferences.isEmpty()) {
+                userPreferenceRepository.saveAll(Objects.requireNonNull(preferences));
+            }
+
+            return "선호/비선호 목록이 성공적으로 수정되었습니다.";
+        } catch (GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GeneralException(GeneralErrorCode.PREFER_UPDATE_FAILED);
+        }
     }
 
     private User findUserFromAuthorizationHeader(String authorizationHeader) {
@@ -82,6 +132,17 @@ public class IngredientFirstLoginService {
                 .distinct()
                 .map(name -> createUserPreference(user, name, type))
                 .toList();
+    }
+
+    private String toPreferenceType(String type) {
+        String normalizedType = type.trim();
+        if ("선호".equals(normalizedType) || "PREFER".equalsIgnoreCase(normalizedType)) {
+            return "PREFER";
+        }
+        if ("비선호".equals(normalizedType) || "DISPREFER".equalsIgnoreCase(normalizedType)) {
+            return "DISPREFER";
+        }
+        throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
     }
 
     private UserPreference createUserPreference(User user, String ingredientName, String type) {

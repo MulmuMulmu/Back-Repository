@@ -1,5 +1,7 @@
 package com.team200.graduation_project.domain.ingredient.controller;
 
+import com.team200.graduation_project.domain.ingredient.dto.request.AllergyUpdateRequest;
+import com.team200.graduation_project.domain.ingredient.dto.request.PreferUpdateRequest;
 import com.team200.graduation_project.domain.ingredient.service.IngredientService;
 import com.team200.graduation_project.domain.ingredient.dto.request.ExtraInfoRequest;
 import com.team200.graduation_project.domain.ingredient.service.IngredientFirstLoginService;
@@ -7,6 +9,7 @@ import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,23 @@ public class IngredientController implements IngredientControllerDocs {
             @RequestBody ExtraInfoRequest request
     ) {
         return ApiResponse.onSuccess(ingredientFirstLoginService.saveExtraInfo(authorizationHeader, request));
+    }
+
+    @PutMapping("/allergy")
+    @Override
+    public ApiResponse<String> updateAllergy(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody AllergyUpdateRequest request
+    ) {
+        return ApiResponse.onSuccess(ingredientFirstLoginService.updateAllergy(authorizationHeader, request));
+    }
+
+    @PutMapping("/prefer")
+    @Override
+    public ApiResponse<String> updatePrefer(
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody PreferUpdateRequest request
+    ) {
+        return ApiResponse.onSuccess(ingredientFirstLoginService.updatePrefer(authorizationHeader, request));
     }
 }

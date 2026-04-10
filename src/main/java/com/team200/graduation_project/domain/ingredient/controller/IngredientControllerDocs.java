@@ -1,6 +1,8 @@
 package com.team200.graduation_project.domain.ingredient.controller;
 
+import com.team200.graduation_project.domain.ingredient.dto.request.AllergyUpdateRequest;
 import com.team200.graduation_project.domain.ingredient.dto.request.ExtraInfoRequest;
+import com.team200.graduation_project.domain.ingredient.dto.request.PreferUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -119,6 +121,129 @@ public interface IngredientControllerDocs {
                     )
             )
             ExtraInfoRequest request
+    );
+
+    @Operation(
+            summary = "알러지 정보 수정",
+            description = "사용자의 알러지 목록을 새 목록(newallergy)으로 갱신합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": "알러지 목록이 성공적으로 수정되었습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "알러지 수정 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "알러지를 수정할 수 있습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<String> updateAllergy(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = AllergyUpdateRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "oldallergy": ["땅콩", "새우"],
+                                              "newallergy": ["땅콩", "밀", "우유"]
+                                            }
+                                            """
+                            )
+                    )
+            )
+            AllergyUpdateRequest request
+    );
+
+    @Operation(
+            summary = "선호/비선호 식재료 수정",
+            description = "type(선호/비선호)에 따라 선호 혹은 비선호 식재료 목록을 새 목록으로 갱신합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": "선호/비선호 목록이 성공적으로 수정되었습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "수정 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "선호, 비선호 목록을 수정할 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<String> updatePrefer(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = PreferUpdateRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "type": "선호",
+                                              "oldPrefer": ["감자", "소고기"],
+                                              "newPrefer": ["고구마", "밥"]
+                                            }
+                                            """
+                            )
+                    )
+            )
+            PreferUpdateRequest request
     );
 }
 
