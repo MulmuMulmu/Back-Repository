@@ -34,4 +34,8 @@ public class User {
 
     @Column(length = 20)
     private Boolean firstLogin;
+
+    public void updateFirstLogin(Boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
 }
