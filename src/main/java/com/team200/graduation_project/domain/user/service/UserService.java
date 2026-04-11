@@ -55,6 +55,8 @@ public class UserService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .nickName(request.getName())
                     .firstLogin(true)
+                    .reportCount(0L)
+                    .status("normal")
                     .build();
 
             userRepository.save(user);
@@ -78,6 +80,8 @@ public class UserService {
                         .password(null)
                         .nickName("kakao_user")
                         .firstLogin(true)
+                        .reportCount(0L)
+                        .status("normal")
                         .build();
                 userRepository.save(user);
             }

@@ -38,6 +38,12 @@ public class User {
 
     private LocalDateTime deletedAt;
 
+    @Column(length = 20)
+    private String status;
+
+    private Long reportCount;
+
+
     public void updateFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;
     }
