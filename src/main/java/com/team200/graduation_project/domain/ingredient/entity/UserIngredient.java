@@ -4,6 +4,8 @@ package com.team200.graduation_project.domain.ingredient.entity;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +14,12 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "`UserIngredient`")
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserIngredient {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIngredientId;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -15,13 +15,13 @@ import org.springframework.util.StringUtils;
 public class JwtTokenProvider {
 
     private final SecretKey signingKey;
-    private final long accessTokenExpirationMs;
-    private final long refreshTokenExpirationMs;
+    private final Long accessTokenExpirationMs;
+    private final Long refreshTokenExpirationMs;
 
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.access-token-expiration-ms}") long accessTokenExpirationMs,
-            @Value("${jwt.refresh-token-expiration-ms}") long refreshTokenExpirationMs
+            @Value("${jwt.access-token-expiration-ms}") Long accessTokenExpirationMs,
+            @Value("${jwt.refresh-token-expiration-ms}") Long refreshTokenExpirationMs
     ) {
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.accessTokenExpirationMs = accessTokenExpirationMs;
@@ -53,7 +53,7 @@ public class JwtTokenProvider {
         return parseClaims(token).getSubject();
     }
 
-    private String generateToken(String subject, long expirationMs) {
+    private String generateToken(String subject, Long expirationMs) {
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationMs);
 

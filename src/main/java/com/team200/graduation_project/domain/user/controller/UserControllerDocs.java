@@ -332,6 +332,7 @@ public interface UserControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> logout(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader
@@ -377,7 +378,8 @@ public interface UserControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> deleteAccount(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
-                    required = true,
+                    required = false,
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
             @RequestHeader("Authorization") String authorizationHeader
@@ -439,7 +441,8 @@ public interface UserControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> changePassword(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
-                    required = true,
+                    required = false,
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
             @RequestHeader("Authorization") String authorizationHeader,

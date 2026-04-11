@@ -17,7 +17,7 @@ public class RecipeStep {
     @JoinColumn(name = "recipeId")
     private Recipe recipe;
 
-    private Integer stepOrder;
+    private Long stepOrder;
 
     @Column(columnDefinition = "TEXT")
     private String description;

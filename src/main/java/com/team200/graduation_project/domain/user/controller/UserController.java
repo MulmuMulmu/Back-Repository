@@ -65,7 +65,7 @@ public class UserController implements UserControllerDocs {
     @DeleteMapping("/deletion")
     @Override
     public ApiResponse<String> deleteAccount(
-            @RequestHeader("Authorization") String authorizationHeader
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
     ) {
         return ApiResponse.onSuccess(userService.deleteAccount(authorizationHeader));
     }
@@ -73,7 +73,7 @@ public class UserController implements UserControllerDocs {
     @PutMapping("/password")
     @Override
     public ApiResponse<String> changePassword(
-            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             @RequestBody ChangePasswordRequest request
     ) {
         return ApiResponse.onSuccess(userService.changePassword(authorizationHeader, request));

@@ -63,6 +63,218 @@ public interface IngredientControllerDocs {
     );
 
     @Operation(
+            summary = "식재료 수동 등록",
+            description = "사용자가 구매하거나 보유한 식재료를 수동으로 등록합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": "성공적으로 저장되었습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "식재료 저장 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "식재료를 저장할 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<String> inputIngredients(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientInputRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            [
+                                             {
+                                             "ingredient" : "바나나",
+                                             "expirationDate" : "2026-04-06",
+                                             "category" : "과일",
+                                             "amount" : 2,
+                                             "unit" : "개"
+                                             },
+                                             {
+                                             "ingredient" : "부추",
+                                             "expirationDate": "2026-05-10",
+                                             "category" : "채소",
+                                             "amount" : 150,
+                                             "unit" : "g"
+                                             }
+                                            ]
+                                            """
+                            )
+                    )
+            )
+            java.util.List<com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientInputRequest> request
+    );
+
+    @Operation(
+            summary = "보유 식재료 목록 조회",
+            description = "사용자가 보유한 식재료 목록을 카테고리별로 필터링하고 지정된 기준으로 정렬하여 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": [
+                                                {
+                                                  "sortRank" : 1,
+                                                  "ingredient" : "사과",
+                                                  "dDay" : 20,
+                                                  "expirationDate" : "2026-05-01"
+                                                },
+                                                {
+                                                  "sortRank" : 2,
+                                                  "ingredient" : "돼지고기 앞다리살",
+                                                  "dDay" : 30,
+                                                  "expirationDate" : "2026-05-13"
+                                                }
+                                              ]
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 파라미터",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON400",
+                                              "result": "reqeust 값을 정확하게 입력하여 주세요."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "식재료 목록 계산 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "식재료 목록을 계산할 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<java.util.List<com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse>> searchMyIngredients(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                            "category" : ["과일", "고기"],
+                                            "sort" : "date&ascending"
+                                            }
+                                            """
+                            )
+                    )
+            )
+            com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest request
+    );
+
+    @Operation(
+            summary = "소비기한 3일 이내 식재료 개수 반환",
+            description = "사용자가 보유한 식재료 중 소비기한이 3일 이내인 항목의 개수를 불러옵니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": 3
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "목록 계산 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "소비기한 3일 내 식자재 개수를 불러올 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<Integer> countExpiringIngredients(
+            @Parameter(
+                    description = "JWT access token",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader
+    );
+
+    @Operation(
             summary = "첫 로그인 추가정보 저장",
             description = """
                     첫 로그인 시 알레르기/선호/비선호 재료를 저장합니다.
@@ -101,7 +313,8 @@ public interface IngredientControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> saveExtraInfo(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
-                    required = true,
+                    required = false,
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
             @RequestHeader("Authorization") String authorizationHeader,
@@ -163,7 +376,8 @@ public interface IngredientControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> updateAllergy(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
-                    required = true,
+                    required = false,
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
             @RequestHeader("Authorization") String authorizationHeader,
@@ -224,10 +438,11 @@ public interface IngredientControllerDocs {
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> updatePrefer(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
-                    required = true,
+                    required = false,
+                    hidden = true,
                     example = "Bearer exampleToken"
             )
-            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             @RequestBody(
                     required = true,
                     content = @Content(

@@ -20,6 +20,14 @@ public enum GeneralErrorCode {
             "COMMON500", "알러지를 수정할 수 있습니다."),
     PREFER_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "선호, 비선호 목록을 수정할 수 없습니다."),
+    INGREDIENT_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "식재료를 저장할 수 없습니다."),
+    INGREDIENT_CALCULATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "식재료 목록을 계산할 수 없습니다."),
+    INGREDIENT_COUNT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "소비기한 3일 내 식자재 개수를 불러올 수 없습니다."),
+    INVALID_REQUEST_ARGUMENT(HttpStatus.BAD_REQUEST,
+            "COMMON400", "reqeust 값을 정확하게 입력하여 주세요."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

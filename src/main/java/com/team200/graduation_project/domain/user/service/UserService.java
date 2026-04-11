@@ -64,6 +64,7 @@ public class UserService {
         } catch (UserException e) {
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UserException(UserErrorCode.USER_SIGNUP_FAILED);
         }
     }
