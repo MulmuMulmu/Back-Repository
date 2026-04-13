@@ -2,19 +2,15 @@ package com.team200.graduation_project.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 @Entity
 @Table(name = "`User`")
@@ -25,12 +21,8 @@ import org.hibernate.annotations.UuidGenerator;
 public class User {
 
     @Id
-    @UuidGenerator
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID userId;
-
-    @Column(name = "id", nullable = false, length = 50)
-    private String id;
+    @Column(name = "userId", nullable = false, length = 50)
+    private String userId;
 
     @Column(length = 100)
     private String password;
@@ -60,4 +52,5 @@ public class User {
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
     }
+
 }

@@ -34,7 +34,7 @@ public class UserService {
             throw new UserException(UserErrorCode.USER_BAD_REQUEST);
         }
 
-        if (userRepository.existsByIdIs(id)) {
+        if (userRepository.existsByUserIdIs(id)) {
             throw new UserException(UserErrorCode.USER_ID_DUPLICATED);
         }
 
@@ -45,13 +45,13 @@ public class UserService {
     public String signup(UserSignupRequest request) {
         validateSignupRequest(request);
 
-        if (userRepository.existsByIdIs(request.getId())) {
+        if (userRepository.existsByUserIdIs(request.getId())) {
             throw new UserException(UserErrorCode.USER_ID_DUPLICATED);
         }
 
         try {
             User user = User.builder()
-                    .id(request.getId())
+                    .userId(request.getId())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .nickName(request.getName())
                     .firstLogin(true)
@@ -76,9 +76,9 @@ public class UserService {
         String kakaoId = kakaoUserIdFromAuthorizationCode(request.getAuthorizationCode());
 
         try {
-            if (!userRepository.existsByIdIs(kakaoId)) {
+            if (!userRepository.existsByUserIdIs(kakaoId)) {
                 User user = User.builder()
-                        .id(kakaoId)
+                        .userId(kakaoId)
                         .password(null)
                         .nickName("kakao_user")
                         .firstLogin(true)
@@ -126,7 +126,7 @@ public class UserService {
         }
 
         User user = userRepository
-                .findByIdIsAndDeletedAtIsNull(request.getId())
+                .findByUserIdIsAndDeletedAtIsNull(request.getId())
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
 
         if (!StringUtils.hasText(user.getPassword())
@@ -134,7 +134,7 @@ public class UserService {
             throw new UserException(UserErrorCode.USER_LOGIN_FAILED);
         }
 
-        JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getId());
+        JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getUserId());
         return new LoginResponse(tokenPair.accessToken(), user.getFirstLogin());
     }
 
@@ -146,10 +146,10 @@ public class UserService {
 
         String kakaoId = kakaoUserIdFromAuthorizationCode(request.getAuthorizationCode());
         User user = userRepository
-                .findByIdIsAndDeletedAtIsNull(kakaoId)
+                .findByUserIdIsAndDeletedAtIsNull(kakaoId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
 
-        JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getId());
+        JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getUserId());
         return new LoginResponse(tokenPair.accessToken(), user.getFirstLogin());
     }
 
@@ -206,7 +206,7 @@ public class UserService {
         }
 
         String userId = jwtTokenProvider.getSubject(token);
-        return userRepository.findByIdIsAndDeletedAtIsNull(userId)
+        return userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
     }
 

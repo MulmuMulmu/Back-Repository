@@ -104,7 +104,7 @@ public class IngredientFirstLoginService {
         }
 
         String userId = jwtTokenProvider.getSubject(token);
-        return userRepository.findByIdIs(userId)
+        return userRepository.findByUserIdIs(userId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
     }
 
