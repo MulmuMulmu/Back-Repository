@@ -278,6 +278,7 @@ public interface IngredientControllerDocs {
             summary = "첫 로그인 추가정보 저장",
             description = """
                     첫 로그인 시 알레르기/선호/비선호 재료를 저장합니다.
+                    DB에 식재료 정보가 없으면 저장되지 않습니다!
                     - allergies: 알레르기 재료명 리스트
                     - prefer_ingredients: 선호 재료명 리스트
                     - disprefer_ingredients: 비선호 재료명 리스트
