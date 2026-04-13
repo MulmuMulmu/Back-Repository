@@ -6,16 +6,21 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "`Share`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Share {
+
     @Id
-    private Long shareId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID shareId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

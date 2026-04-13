@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "`Location`")
@@ -12,7 +15,9 @@ import lombok.NoArgsConstructor;
 public class Location {
 
     @Id
-    private Long locationId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID locationId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

@@ -7,17 +7,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
-@Table(name = "`UserPreference`")
+@Table(name = "`UserPreferenceIngredient`")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserPreference {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userPreferenceId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID userPreferenceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

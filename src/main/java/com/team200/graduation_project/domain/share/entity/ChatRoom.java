@@ -5,16 +5,21 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "`ChatRoom`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom {
+
     @Id
-    private Long chatRoomId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID chatRoomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shareId")

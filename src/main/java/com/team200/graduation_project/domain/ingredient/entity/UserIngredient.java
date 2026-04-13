@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "`UserIngredient`")
@@ -18,9 +20,11 @@ import java.time.LocalDate;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserIngredient {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userIngredientId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID userIngredientId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

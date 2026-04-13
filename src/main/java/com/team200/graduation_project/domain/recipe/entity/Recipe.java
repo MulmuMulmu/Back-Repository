@@ -7,14 +7,20 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "`Recipe`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recipe {
+
     @Id
-    private Long recipeId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID recipeId;
 
     @Column(length = 100)
     private String name;

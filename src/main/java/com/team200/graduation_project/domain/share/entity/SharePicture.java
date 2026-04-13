@@ -4,14 +4,20 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "`SharePicture`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SharePicture {
+
     @Id
-    private Long sharePictureId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID sharePictureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shareId")

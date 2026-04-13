@@ -5,16 +5,21 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "`Report`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Report {
+
     @Id
-    private Long reportId;
+    @UuidGenerator
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID reportId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporterId")
