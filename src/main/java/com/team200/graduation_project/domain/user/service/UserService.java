@@ -56,6 +56,7 @@ public class UserService {
                     .nickName(request.getName())
                     .firstLogin(true)
                     .reportCount(0L)
+                    .deletedAt(null)
                     .status("normal")
                     .build();
 
@@ -82,6 +83,7 @@ public class UserService {
                         .nickName("kakao_user")
                         .firstLogin(true)
                         .reportCount(0L)
+                        .deletedAt(null)
                         .status("normal")
                         .build();
                 userRepository.save(user);
