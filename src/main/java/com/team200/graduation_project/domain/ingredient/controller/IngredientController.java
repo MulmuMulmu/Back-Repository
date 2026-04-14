@@ -10,6 +10,7 @@ import com.team200.graduation_project.domain.ingredient.service.UserIngredientSe
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +46,7 @@ public class IngredientController implements IngredientControllerDocs {
     @Override
     public ApiResponse<java.util.List<com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse>> searchMyIngredients(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
-            @RequestBody com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest request) {
+            @ModelAttribute com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest request) {
         return ApiResponse.onSuccess(userIngredientService.searchUserIngredients(authorizationHeader, request));
     }
 

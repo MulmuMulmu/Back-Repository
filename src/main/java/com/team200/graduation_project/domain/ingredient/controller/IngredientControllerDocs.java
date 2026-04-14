@@ -210,20 +210,6 @@ public interface IngredientControllerDocs {
                     example = "Bearer exampleToken"
             )
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody(
-                    required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest.class),
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                            "category" : ["과일", "고기"],
-                                            "sort" : "date&ascending"
-                                            }
-                                            """
-                            )
-                    )
-            )
             com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest request
     );
 

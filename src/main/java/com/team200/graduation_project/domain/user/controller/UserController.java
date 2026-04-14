@@ -3,18 +3,19 @@ package com.team200.graduation_project.domain.user.controller;
 import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
-import com.team200.graduation_project.domain.user.dto.request.UserIdCheckRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
 import com.team200.graduation_project.domain.user.service.UserService;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,10 +25,10 @@ public class UserController implements UserControllerDocs {
 
     private final UserService userService;
 
-    @PostMapping("/signup/idCheck")
+    @GetMapping("/signup/idCheck")
     @Override
-    public ApiResponse<String> checkIdDuplicated(@RequestBody UserIdCheckRequest request) {
-        return ApiResponse.onSuccess(userService.checkIdDuplicated(request.getId()));
+    public ApiResponse<String> checkIdDuplicated(@RequestParam("id") String id) {
+        return ApiResponse.onSuccess(userService.checkIdDuplicated(id));
     }
 
     @PostMapping("/signup")

@@ -3,7 +3,6 @@ package com.team200.graduation_project.domain.user.controller;
 import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
-import com.team200.graduation_project.domain.user.dto.request.UserIdCheckRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,12 +30,12 @@ public interface UserControllerDocs {
                     content = @Content(
                             mediaType = "application/json",
                             examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "success": true,
-                                              "result": "사용가능한 id 입니다."
-                                            }
-                                            """
+                                     value = """
+                                             {
+                                               "success": true,
+                                               "result": "사용가능한 id 입니다."
+                                             }
+                                             """
                             )
                     )
             ),
@@ -58,20 +57,8 @@ public interface UserControllerDocs {
             )
     })
     com.team200.graduation_project.global.apiPayload.ApiResponse<String> checkIdDuplicated(
-            @RequestBody(
-                    required = true,
-                    content = @Content(
-                            schema = @Schema(implementation = UserIdCheckRequest.class),
-                            examples = @ExampleObject(
-                                    value = """
-                                            {
-                                              "id": "test_user"
-                                            }
-                                            """
-                            )
-                    )
-            )
-            UserIdCheckRequest request
+            @Parameter(name = "id", description = "중복 확인할 아이디", example = "test_user")
+            String id
     );
 
     @Operation(
