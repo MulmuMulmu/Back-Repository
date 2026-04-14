@@ -33,7 +33,7 @@ public interface IngredientControllerDocs {
                                             {
                                               "success": true,
                                               "result": {
-                                                "ingredientNames": ["계란", "우유", "밀가루"]
+                                                "ingredientNames": ["소고기", "돼지고기", "닭고기"]
                                               }
                                             }
                                             """
@@ -58,7 +58,7 @@ public interface IngredientControllerDocs {
             )
     })
     com.team200.graduation_project.global.apiPayload.ApiResponse<?> searchIngredients(
-            @Parameter(description = "검색 키워드", required = true, example = "계")
+            @Parameter(description = "검색 키워드", required = true, example = "고기")
             @RequestParam String keyword
     );
 
