@@ -49,8 +49,6 @@ public class UserIngredientService {
                 return UserIngredient.builder()
                         .user(user)
                         .ingredient(ingredient)
-                        .amount(request.getAmount())
-                        .unit(request.getUnit())
                         .expirationDate(request.getExpirationDate())
                         .status("INPUT") // Or leave null, using a default value based on current context
                         .build();

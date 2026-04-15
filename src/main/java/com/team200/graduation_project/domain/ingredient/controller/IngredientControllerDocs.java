@@ -120,16 +120,12 @@ public interface IngredientControllerDocs {
                                              {
                                              "ingredient" : "바나나",
                                              "expirationDate" : "2026-04-06",
-                                             "category" : "과일",
-                                             "amount" : 2,
-                                             "unit" : "개"
+                                             "category" : "과일"
                                              },
                                              {
                                              "ingredient" : "부추",
                                              "expirationDate": "2026-05-10",
-                                             "category" : "채소",
-                                             "amount" : 150,
-                                             "unit" : "g"
+                                             "category" : "채소"
                                              }
                                             ]
                                             """

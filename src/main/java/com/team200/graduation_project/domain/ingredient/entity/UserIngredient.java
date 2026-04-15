@@ -33,11 +33,6 @@ public class UserIngredient {
     @JoinColumn(name = "ingredientId")
     private Ingredient ingredient;
 
-    private Double amount;
-
-    @Column(length = 20)
-    private String unit;
-
     private LocalDate expirationDate;
 
     @Column(length = 20)

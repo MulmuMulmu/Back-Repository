@@ -28,11 +28,7 @@ public class Recipe {
     @Column(length = 50)
     private String category;
 
-    @Column(length = 50)
-    private String cookingMethod;
-
-    private Long calories;
-
     @Column(length = 200)
     private String imageUrl;
+
 }

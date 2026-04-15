@@ -13,6 +13,4 @@ public class UserIngredientInputRequest {
     private String ingredient;
     private LocalDate expirationDate;
     private String category;
-    private Double amount;
-    private String unit;
 }
