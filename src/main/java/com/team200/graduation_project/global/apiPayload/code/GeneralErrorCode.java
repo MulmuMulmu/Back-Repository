@@ -26,6 +26,8 @@ public enum GeneralErrorCode {
             "COMMON500", "식재료 목록을 계산할 수 없습니다."),
     INGREDIENT_COUNT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "소비기한 3일 내 식자재 개수를 불러올 수 없습니다."),
+    INGREDIENT_NEAR_EXPIRATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "유통기한 임박 식재료를 불러올 수 없습니다."),
     INVALID_REQUEST_ARGUMENT(HttpStatus.BAD_REQUEST,
             "COMMON400", "reqeust 값을 정확하게 입력하여 주세요."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,

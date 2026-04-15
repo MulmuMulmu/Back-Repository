@@ -16,7 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Comparator;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientExpirationResponse;
+import org.springframework.data.domain.Sort;
 
 @Service
 @RequiredArgsConstructor
@@ -110,13 +116,46 @@ public class UserIngredientService {
             User user = findUserFromAuthorizationHeader(authorizationHeader);
             java.time.LocalDate today = java.time.LocalDate.now();
             java.time.LocalDate endDate = today.plusDays(withinDays);
-            
+
             // "소비기한 N일 내" = 오늘 포함하여 +N일 이하인 항목 계산 (이미 지난 항목도 세려면 LessThanEqual, 여기서는 오늘부터 +N일 이내로만 계산)
             return userIngredientRepository.countByUserAndExpirationDateBetween(user, today, endDate);
         } catch (GeneralException e) {
             throw e;
         } catch (Exception e) {
             throw new GeneralException(GeneralErrorCode.INGREDIENT_COUNT_FAILED);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserIngredientExpirationResponse> getNearExpiringIngredients(String authorizationHeader) {
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            List<UserIngredient> items = userIngredientRepository.findByUser(user, Sort.by(Sort.Direction.ASC, "expirationDate"));
+
+            LocalDate today = LocalDate.now();
+
+            Map<Long, List<String>> grouped = items.stream()
+                    .filter(item -> item.getExpirationDate() != null)
+                    .collect(Collectors.groupingBy(
+                            item -> ChronoUnit.DAYS.between(today, item.getExpirationDate()),
+                            Collectors.mapping(
+                                    item -> item.getIngredient().getIngredientName(),
+                                    Collectors.toList()
+                            )
+                    ));
+
+            return grouped.entrySet().stream()
+                    .map(entry -> UserIngredientExpirationResponse.builder()
+                            .dDay(entry.getKey())
+                            .ingredient(entry.getValue())
+                            .build())
+                    .sorted(Comparator.comparingLong(UserIngredientExpirationResponse::getDDay))
+                    .collect(Collectors.toList());
+
+        } catch (GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GeneralException(GeneralErrorCode.INGREDIENT_NEAR_EXPIRATION_FAILED);
         }
     }
 

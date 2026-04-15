@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+import com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientExpirationResponse;
+import com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse;
 
 @RestController
 @RequestMapping("/ingredient")
@@ -44,7 +47,7 @@ public class IngredientController implements IngredientControllerDocs {
 
     @GetMapping("/all/my")
     @Override
-    public ApiResponse<java.util.List<com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse>> searchMyIngredients(
+    public ApiResponse<List<UserIngredientSearchResponse>> searchMyIngredients(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             @ModelAttribute com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientSearchRequest request) {
         return ApiResponse.onSuccess(userIngredientService.searchUserIngredients(authorizationHeader, request));
@@ -55,6 +58,13 @@ public class IngredientController implements IngredientControllerDocs {
     public ApiResponse<Integer> countExpiringIngredients(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         return ApiResponse.onSuccess(userIngredientService.countExpiringIngredients(authorizationHeader, 3));
+    }
+
+    @GetMapping("/expiration/near")
+    @Override
+    public ApiResponse<List<UserIngredientExpirationResponse>> getNearExpiringIngredients(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
+        return ApiResponse.onSuccess(userIngredientService.getNearExpiringIngredients(authorizationHeader));
     }
 
     @PostMapping("/first/login")

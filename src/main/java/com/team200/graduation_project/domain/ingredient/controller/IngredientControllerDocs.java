@@ -14,6 +14,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import java.util.List;
+import com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientExpirationResponse;
+import com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse;
 
 @Tag(name = "Ingredient", description = "재료 검색/첫 로그인 추가정보 API")
 public interface IngredientControllerDocs {
@@ -202,7 +205,7 @@ public interface IngredientControllerDocs {
                     )
             )
     })
-    com.team200.graduation_project.global.apiPayload.ApiResponse<java.util.List<com.team200.graduation_project.domain.ingredient.dto.response.UserIngredientSearchResponse>> searchMyIngredients(
+    com.team200.graduation_project.global.apiPayload.ApiResponse<List<UserIngredientSearchResponse>> searchMyIngredients(
             @Parameter(
                     description = "JWT access token (Bearer prefix 포함 가능)",
                     required = false,
@@ -251,6 +254,62 @@ public interface IngredientControllerDocs {
             )
     })
     com.team200.graduation_project.global.apiPayload.ApiResponse<Integer> countExpiringIngredients(
+            @Parameter(
+                    description = "JWT access token",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader
+    );
+    
+    @Operation(
+            summary = "유통기한 임박 식재료 목록 조회",
+            description = "사용자가 보유한 식재료 중 유통기한이 임박한 항목들을 D-Day별로 그룹화하여 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": [
+                                                {
+                                                  "dDay" : 1,
+                                                  "ingredient" : ["감자", "시금치"]
+                                                },
+                                                {
+                                                  "dDay" : 2,
+                                                  "ingredient" : ["당근", "오이"]
+                                                }
+                                              ]
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "목록 계산 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code" : "COMMON500",
+                                              "result": "유통기한 임박 식재료를 불러올 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<List<UserIngredientExpirationResponse>> getNearExpiringIngredients(
             @Parameter(
                     description = "JWT access token",
                     required = false,

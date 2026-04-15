@@ -1,6 +1,5 @@
 package com.team200.graduation_project.domain.ingredient.entity;
 
-
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
