@@ -39,8 +39,6 @@ public class UserIngredient {
     @Column(length = 20)
     private String unit;
 
-    private LocalDate purchaseDate;
-
     private LocalDate expirationDate;
 
     @Column(length = 20)
