@@ -1,5 +1,7 @@
 package com.team200.graduation_project.global.apiPayload.exception;
 
+import com.team200.graduation_project.domain.share.exception.ShareErrorCode;
+import com.team200.graduation_project.domain.share.exception.ShareException;
 import com.team200.graduation_project.domain.user.exception.UserErrorCode;
 import com.team200.graduation_project.domain.user.exception.UserException;
 import com.team200.graduation_project.global.apiPayload.code.GeneralErrorCode;
@@ -23,6 +25,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserException.class)
     public ResponseEntity<ApiResponse<String>> handleUserException(UserException e) {
         UserErrorCode status = e.getStatus();
+        return ResponseEntity
+                .status(status.getStatus())
+                .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));
+    }
+
+    @ExceptionHandler(ShareException.class)
+    public ResponseEntity<ApiResponse<String>> handleShareException(ShareException e) {
+        ShareErrorCode status = e.getStatus();
         return ResponseEntity
                 .status(status.getStatus())
                 .body(ApiResponse.onFailure(status.getCode(), status.getMessage()));

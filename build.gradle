@@ -40,9 +40,15 @@ dependencies {
 
     implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 
-    implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage'
+    implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
     implementation 'com.google.cloud:spring-cloud-gcp-starter'
 
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:7.4.6"
+    }
 }
 
 tasks.named('test') {

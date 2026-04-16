@@ -4,6 +4,8 @@ import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
@@ -15,6 +17,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "`Share`")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Share {
 
@@ -51,5 +55,16 @@ public class Share {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+    @PrePersist
+    protected void onCreate() {
+        createTime = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
+    }
 
 }
