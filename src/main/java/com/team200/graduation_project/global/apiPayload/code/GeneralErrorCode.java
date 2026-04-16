@@ -30,8 +30,11 @@ public enum GeneralErrorCode {
             "COMMON500", "유통기한 임박 식재료를 불러올 수 없습니다."),
     INVALID_REQUEST_ARGUMENT(HttpStatus.BAD_REQUEST,
             "COMMON400", "reqeust 값을 정확하게 입력하여 주세요."),
+    LOCATION_FETCH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "위치를 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
-            "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
+            "COMMON500", "예기치 않은 서버 에러가 발생했습니다."),
+    INGREDIENT_NOT_FOUNDED(HttpStatus.BAD_REQUEST,"COMMON400","식재료 db에 식품을 찾을 수 없습니다.");
 
 
     private final HttpStatus status;

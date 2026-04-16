@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.ingredient.service;
 import com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientInputRequest;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
+import com.team200.graduation_project.domain.ingredient.exception.IngredientErrorCode;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
 import com.team200.graduation_project.domain.user.entity.User;
@@ -44,7 +45,7 @@ public class UserIngredientService {
 
             List<UserIngredient> userIngredients = requests.stream().map(request -> {
                 Ingredient ingredient = ingredientRepository.findByIngredientName(request.getIngredient())
-                        .orElseThrow(() -> new GeneralException(GeneralErrorCode.BAD_REQUEST));
+                        .orElseThrow(() -> new GeneralException(GeneralErrorCode.INGREDIENT_NOT_FOUNDED));
 
                 return UserIngredient.builder()
                         .user(user)

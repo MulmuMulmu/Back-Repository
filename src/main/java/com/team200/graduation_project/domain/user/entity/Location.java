@@ -1,9 +1,7 @@
 package com.team200.graduation_project.domain.user.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
@@ -11,6 +9,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "`Location`")
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Location {
 
@@ -32,4 +32,11 @@ public class Location {
 
     @Column(length = 50)
     private String displayAddress;
+
+    public void update(Double latitude, Double longitude, String fullAddress, String displayAddress) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.fullAddress = fullAddress;
+        this.displayAddress = displayAddress;
+    }
 }
