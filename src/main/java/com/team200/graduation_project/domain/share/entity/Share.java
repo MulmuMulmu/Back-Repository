@@ -51,4 +51,5 @@ public class Share {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
 }
