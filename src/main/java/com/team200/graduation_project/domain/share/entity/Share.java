@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -38,6 +39,11 @@ public class Share {
 
     @Column(length = 20)
     private String status;
+
+    @Column(length = 50)
+    private String category;
+
+    private LocalDate expirationDate;
 
     @Column(length = 20)
     private String isView;
