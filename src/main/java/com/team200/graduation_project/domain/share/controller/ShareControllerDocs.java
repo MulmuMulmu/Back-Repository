@@ -23,8 +23,8 @@ public interface ShareControllerDocs {
                     {
                       "success": true,
                       "result": {
-                        "full_address": "서울특별시 중구 태평로1가 31",
-                        "display_address": "태평로1가"
+                        "full_address": "경기 성남시 수정구 복정동 620-2",
+                        "display_address": "복정동"
                       }
                     }
                     """))),
@@ -40,8 +40,8 @@ public interface ShareControllerDocs {
             @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody(required = true, content = @Content(schema = @Schema(implementation = LocationRequest.class), examples = @ExampleObject(value = """
                     {
-                      "latitude": 37.5665,
-                      "longitude": 126.9780
+                      "latitude": 37.450108,
+                      "longitude": 127.129712
                     }
                     """))) LocationRequest request);
 
