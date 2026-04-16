@@ -22,8 +22,7 @@ public class ShareController implements ShareControllerDocs {
     @PostMapping("/adding/location")
     public ApiResponse<LocationResponse> addLocation(
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestBody LocationRequest request
-    ) {
+            @RequestBody LocationRequest request) {
         return ApiResponse.onSuccess(shareService.addLocation(authorizationHeader, request));
     }
 }
