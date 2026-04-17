@@ -126,7 +126,7 @@ public interface ShareControllerDocs {
                         "image": "https://storage.googleapis.com/...",
                         "sellerName": "exampleUser",
                         "title": "exampleTitle",
-                        "category": "농산물",
+                        "category": "농산물 or 원형 보존 농산물 or 건강기능식품",
                         "content": "exampleDescription",
                         "expirationDate": "2026-04-20",
                         "createTime": "2026-04-13T20:00:00"
