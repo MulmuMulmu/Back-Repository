@@ -263,7 +263,7 @@ public interface ShareControllerDocs {
                     {
                       "postId": "aed70029-7b9e-4504-8ecd-5f09491cdbe7",
                       "takerNicName": "홍길동",
-                      "type": "전체 나눔 or 일부 나눔"
+                      "type": "전체 or 일부"
                     }
                     """))) ShareSuccessionRequestDTO request);
 }

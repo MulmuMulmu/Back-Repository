@@ -19,7 +19,7 @@ public class ShareSuccessionRequestDTO {
     private UUID postId;
 
     @Schema(description = "식재료 받는 사람 닉네임", example = "홍길동")
-    private String takerNicName;
+    private String takerNickName;
 
     @Schema(description = "나눔 유형 (일부 나눔, 전체 나눔)", example = "전체 나눔")
     private String type;

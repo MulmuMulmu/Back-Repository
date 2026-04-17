@@ -345,7 +345,7 @@ public class ShareService {
     @Transactional
     public void completeShareSuccession(String authorizationHeader, ShareSuccessionRequestDTO request) {
         User giver = findUserFromHeader(authorizationHeader);
-        User taker = userRepository.findByNickNameIsAndDeletedAtIsNull(request.getTakerNicName())
+        User taker = userRepository.findByNickNameIsAndDeletedAtIsNull(request.getTakerNickName())
                 .orElseThrow(() -> new ShareException(ShareErrorCode.SHARE_POSTING_FAILED));
 
         if (giver.getUserId().equals(taker.getUserId())) {
@@ -365,11 +365,11 @@ public class ShareService {
         }
 
         try {
-            if ("전체 나눔".equals(request.getType())) {
+            if ("전체".equals(request.getType())) {
                 // Transfer ownership
                 giverIngredient.updateUser(taker);
                 userIngredientRepository.save(giverIngredient);
-            } else if ("일부 나눔".equals(request.getType())) {
+            } else if ("일부".equals(request.getType())) {
                 // Clone ingredient for taker
                 UserIngredient takerIngredient = UserIngredient.builder()
                         .user(taker)
