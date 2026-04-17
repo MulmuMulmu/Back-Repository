@@ -1,9 +1,6 @@
 package com.team200.graduation_project.domain.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -35,11 +32,11 @@ public class User {
 
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String status;
+    private UserStatus status;
 
     private Long reportCount;
-
 
     public void updateFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;
@@ -51,6 +48,7 @@ public class User {
 
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
+        this.status = UserStatus.WITHDRAWN;
     }
 
 }

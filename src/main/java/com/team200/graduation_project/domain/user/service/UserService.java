@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
 import com.team200.graduation_project.domain.user.entity.User;
+import com.team200.graduation_project.domain.user.entity.UserStatus;
 import com.team200.graduation_project.domain.user.exception.UserErrorCode;
 import com.team200.graduation_project.domain.user.exception.UserException;
 import com.team200.graduation_project.domain.user.repository.UserRepository;
@@ -57,7 +58,7 @@ public class UserService {
                     .firstLogin(true)
                     .reportCount(0L)
                     .deletedAt(null)
-                    .status("normal")
+                    .status(UserStatus.NORMAL)
                     .build();
 
             userRepository.save(user);
@@ -84,7 +85,7 @@ public class UserService {
                         .firstLogin(true)
                         .reportCount(0L)
                         .deletedAt(null)
-                        .status("normal")
+                        .status(UserStatus.NORMAL)
                         .build();
                 userRepository.save(user);
             }

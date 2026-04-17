@@ -2,9 +2,7 @@ package com.team200.graduation_project.domain.share.entity;
 
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "`ChatMessage`")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage {
 
@@ -37,4 +37,10 @@ public class ChatMessage {
 
     private LocalDateTime createTime;
     private Boolean isRead;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createTime = LocalDateTime.now();
+        this.isRead = false;
+    }
 }
