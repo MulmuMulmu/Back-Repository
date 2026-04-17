@@ -10,10 +10,13 @@ import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
+import java.util.UUID;
+
 @Repository
-public interface UserIngredientRepository extends JpaRepository<UserIngredient, Long> {
+public interface UserIngredientRepository extends JpaRepository<UserIngredient, UUID> {
     List<UserIngredient> findByUserAndIngredient_CategoryIn(User user, List<String> categories, Sort sort);
     List<UserIngredient> findByUser(User user, Sort sort);
+    List<UserIngredient> findByUserAndIngredient_IngredientName(User user, String ingredientName);
     int countByUserAndExpirationDateBetween(User user, java.time.LocalDate startDate, java.time.LocalDate endDate);
     int countByUserAndExpirationDateLessThanEqual(User user, java.time.LocalDate date);
 }

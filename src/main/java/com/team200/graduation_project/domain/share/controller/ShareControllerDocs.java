@@ -1,11 +1,17 @@
 package com.team200.graduation_project.domain.share.controller;
 
 import com.team200.graduation_project.domain.share.dto.request.LocationRequest;
+import com.team200.graduation_project.domain.share.dto.request.ReportRequestDTO;
 import com.team200.graduation_project.domain.share.dto.request.ShareRequestDTO;
+import com.team200.graduation_project.domain.share.dto.request.ShareSuccessionRequestDTO;
 import com.team200.graduation_project.domain.share.dto.response.LocationResponse;
+import com.team200.graduation_project.domain.share.dto.response.MyShareItemDTO;
+import com.team200.graduation_project.domain.share.dto.response.ShareDetailResponseDTO;
+import com.team200.graduation_project.domain.share.dto.response.ShareListResponseDTO;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,6 +19,7 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Share", description = "나눔 도메인 API")
 public interface ShareControllerDocs {
@@ -45,12 +52,26 @@ public interface ShareControllerDocs {
                     }
                     """))) LocationRequest request);
 
-    @Operation(summary = "나눔 게시글 등록 API", description = "사진과 함께 나눔 게시글을 등록합니다.")
+    @Operation(summary = "나눔 게시글 등록", description = "사진 1장과 함께 사용자가 보유한 식재료의 이름을 입력하여 나눔 게시글을 등록합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
                     {
                       "success": true,
                       "result": "성공적으로 등록되었습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "필수 값 누락", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "SHARE400",
+                      "result": "잘못된 요청입니다. (식재료 이름 누락 등)"
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "식재료를 찾을 수 없음", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "SHARE404",
+                      "result": "보유하고 있는 해당 식재료를 찾을 수 없습니다."
                     }
                     """))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "등록 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
@@ -63,5 +84,186 @@ public interface ShareControllerDocs {
     })
     ApiResponse<String> publishSharePosting(
             @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
-            ShareRequestDTO request);
+            @Parameter(description = "나눔 게시글 정보 (식재료 이름 포함 필수)") ShareRequestDTO request);
+
+    @Operation(summary = "내 주변 나눔 정보 리스트 조회", description = "내 위치 기반 주변 나눔 정보를 최신순으로 10km 이내 정보만 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShareListResponseDTO.class), examples = @ExampleObject(value = """
+                    {
+                    "success": true,
+                    "result": {
+                        "items": [
+                          {
+                            "postId": "aed70029-7b9e-4504-8ecd-5f09491cdbe7",
+                            "title": "양배추 가져가실분~",
+                            "locationName": "역삼동",
+                            "distance": 0.8, 
+                            "image": "https://...",
+                            "createdAt": "2026-04-06T10:00:00Z"
+                          }
+                        ],
+                        "totalCount": 25
+                      }
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "조회 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                    "success": false,
+                    "code" : "COMMON500",
+                    "result": "나눔 정보를 불러올 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<ShareListResponseDTO> getShareList(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader);
+
+    @Operation(summary = "나눔 게시글 상세 조회", description = "게시글 ID를 통해 특정 나눔 게시글의 상세 정보를 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ShareDetailResponseDTO.class), examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": {
+                        "image": "https://storage.googleapis.com/...",
+                        "sellerName": "exampleUser",
+                        "title": "exampleTitle",
+                        "category": "농산물",
+                        "content": "exampleDescription",
+                        "expirationDate": "2026-04-20",
+                        "createTime": "2026-04-13T20:00:00"
+                      }
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "조회 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "나눔 정보를 불러올 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<ShareDetailResponseDTO> getShareDetail(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(description = "게시글 ID") java.util.UUID postId);
+
+    @Operation(summary = "내가 작성한 나눔글 리스트 조회", description = "내가 작성한 나눔글을 상태(나눔 중, 나눔 완료)에 따라 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = MyShareItemDTO.class)), examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": [
+                        {
+                          "postId": "examplePostId1",
+                          "image": "https://storage.googleapis.com/...",
+                          "title": "exampleTitle1",
+                          "content": "exampleDescription1"
+                        }
+                      ]
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "조회 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "내 나눔 기록을 불러올 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<java.util.List<MyShareItemDTO>> getMyShareList(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(description = "나눔 상태 (나눔 중, 나눔 완료)") @RequestParam String type);
+
+    @Operation(summary = "내가 작성한 나눔글 수정", description = "내가 작성한 특정 나눔글의 정보를 수정합니다. 식재료 이름으로 연결 대상 물품을 변경할 수 있습니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": "수정 완료되었습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "식재료 또는 게시글을 찾을 수 없음", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "SHARE404",
+                      "result": "보유하고 있는 해당 식재료를 찾을 수 없거나 게시글이 존재하지 않습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "수정 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "수정을 완료할 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<String> updateMySharePosting(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(description = "게시글 ID") @RequestParam java.util.UUID postId,
+            @Parameter(description = "나눔 게시글 수정 정보 (식재료 이름 포함 시 변경)") ShareRequestDTO request);
+
+    @Operation(summary = "내가 작성한 나눔글 삭제", description = "내가 작성한 특정 나눔글을 삭제(논리 삭제)합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": "나눔글이 삭제되었습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "삭제 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "나눔글을 삭제할 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<String> deleteMySharePosting(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(description = "게시글 ID") @RequestParam java.util.UUID postId);
+
+    @Operation(summary = "나눔 게시글 신고", description = "특정 나눔 게시글을 신고합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": "신고가 완료되었습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "신고 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "신고할 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<String> reportSharePosting(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(description = "게시글 ID") @RequestParam java.util.UUID postId,
+            @RequestBody ReportRequestDTO request);
+
+    @Operation(summary = "나눔 완료 처리 (식재료 승계)", description = "나눔이 완료될 때 호출하며, 유형에 따라 식재료를 복제하거나 소유주를 변경합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": "나눔 완료되었습니다."
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "완료 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "나눔을 완료할 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<String> completeShareSuccession(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(required = true, content = @Content(schema = @Schema(implementation = ShareSuccessionRequestDTO.class), examples = @ExampleObject(value = """
+                    {
+                      "postId": "aed70029-7b9e-4504-8ecd-5f09491cdbe7",
+                      "takerNicName": "홍길동",
+                      "type": "전체 나눔 or 일부 나눔"
+                    }
+                    """))) ShareSuccessionRequestDTO request);
 }

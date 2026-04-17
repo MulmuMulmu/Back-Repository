@@ -23,10 +23,14 @@ public class SharePicture {
     @Column(columnDefinition = "BINARY(16)")
     private UUID sharePictureId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shareId")
     private Share share;
 
     @Column(nullable = false, length = 250)
     private String pictureUrl;
+
+    public void updateUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
 }

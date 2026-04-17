@@ -34,7 +34,8 @@ public enum GeneralErrorCode {
             "COMMON500", "위치를 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다."),
-    INGREDIENT_NOT_FOUNDED(HttpStatus.BAD_REQUEST,"COMMON400","식재료 db에 식품을 찾을 수 없습니다.");
+    INGREDIENT_NOT_FOUNDED(HttpStatus.BAD_REQUEST,"COMMON400","식재료 db에 식품을 찾을 수 없습니다."),
+    LOCATION_NOT_FOUND(HttpStatus.NOT_FOUND,"COMMON404","위치 정보를 찾을 수 없습니다");
 
 
     private final HttpStatus status;

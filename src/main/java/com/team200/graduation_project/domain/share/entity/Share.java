@@ -49,12 +49,14 @@ public class Share {
 
     private LocalDate expirationDate;
 
-    @Column(length = 20)
-    private String isView;
+    @Column(nullable = false)
+    private Boolean isView;
 
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
+    private LocalDateTime deletedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -65,6 +67,26 @@ public class Share {
     @PreUpdate
     protected void onUpdate() {
         updateTime = LocalDateTime.now();
+    }
+
+    @OneToOne(mappedBy = "share", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SharePicture sharePicture;
+
+    public void update(String title, String content, String category, LocalDate expirationDate, UserIngredient userIngredient) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.expirationDate = expirationDate;
+        this.userIngredient = userIngredient;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+        this.isView = false;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

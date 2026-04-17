@@ -37,4 +37,8 @@ public class UserIngredient {
 
     @Column(length = 20)
     private String status;
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
 }
