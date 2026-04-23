@@ -32,7 +32,7 @@ fi
 echo ">>> Waiting for $AFTER_COLOR to be healthy..."
 for i in {1..15}
 do
-  HEALTH=$(curl -s http://localhost:$AFTER_PORT/swagger-ui/index.html)
+  HEALTH=$(curl -s http://localhost:$AFTER_PORT/health)
   if [ -n "$HEALTH" ]; then
     echo ">>> $AFTER_COLOR is healthy!"
     break
@@ -42,7 +42,9 @@ do
 done
 
 if [ -z "$HEALTH" ]; then
-  echo ">>> $AFTER_COLOR health check failed. Aborting."
+  echo ">>> $AFTER_COLOR health check failed. Printing logs..."
+  docker compose logs $AFTER_COLOR
+  echo ">>> Aborting deployment."
   docker compose stop $AFTER_COLOR
   exit 1
 fi
