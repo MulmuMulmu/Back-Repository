@@ -41,8 +41,9 @@ public class Share {
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String status;
+    private ShareStatus status;
 
     @Column(length = 50)
     private String category;
@@ -85,7 +86,7 @@ public class Share {
         this.isView = false;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(ShareStatus status) {
         this.status = status;
     }
 

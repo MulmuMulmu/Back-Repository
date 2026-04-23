@@ -14,11 +14,13 @@ import com.team200.graduation_project.domain.share.dto.response.ShareListRespons
 import com.team200.graduation_project.domain.share.entity.Report;
 import com.team200.graduation_project.domain.share.entity.Share;
 import com.team200.graduation_project.domain.share.entity.SharePicture;
+import com.team200.graduation_project.domain.share.entity.ShareStatus;
 import com.team200.graduation_project.domain.share.exception.ShareErrorCode;
 import com.team200.graduation_project.domain.share.exception.ShareException;
 import com.team200.graduation_project.domain.share.repository.ReportRepository;
 import com.team200.graduation_project.domain.share.repository.SharePictureRepository;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
+import com.team200.graduation_project.domain.ingredient.entity.UserIngredientStatus;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
 import com.team200.graduation_project.domain.share.repository.ShareRepository;
 import com.team200.graduation_project.domain.user.entity.Location;
@@ -241,11 +243,11 @@ public class ShareService {
     public List<MyShareItemDTO> getMyShareList(String authorizationHeader, String type) {
         User user = findUserFromHeader(authorizationHeader);
 
-        String status = "AVAILABLE";
+        ShareStatus status = ShareStatus.AVAILABLE;
         if ("나눔 완료".equals(type)) {
-            status = "COMPLETED";
+            status = ShareStatus.COMPLETED;
         } else if ("나눔 중".equals(type)) {
-            status = "AVAILABLE";
+            status = ShareStatus.AVAILABLE;
         }
 
         try {
@@ -375,7 +377,7 @@ public class ShareService {
                         .user(taker)
                         .ingredient(giverIngredient.getIngredient())
                         .expirationDate(giverIngredient.getExpirationDate())
-                        .status("INPUT")
+                        .status(UserIngredientStatus.NORMAL)
                         .build();
                 userIngredientRepository.save(takerIngredient);
             } else {
@@ -383,7 +385,7 @@ public class ShareService {
             }
 
             // Update share status
-            share.setStatus("COMPLETED");
+            share.setStatus(ShareStatus.COMPLETED);
             shareRepository.save(share);
         } catch (ShareException e) {
             throw e;

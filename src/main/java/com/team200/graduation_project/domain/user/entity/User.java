@@ -36,7 +36,11 @@ public class User {
     @Column(length = 20)
     private UserStatus status;
 
-    private Long reportCount;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private Role role;
+
+    private Long warmingCount;
 
     public void updateFirstLogin(Boolean firstLogin) {
         this.firstLogin = firstLogin;

@@ -8,6 +8,18 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum AdminErrorCode {
 
+    ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST,
+            "COMMON400", "아이디 또는 비밀번호가 일치하지 않습니다."),
+    ADMIN_LOGIN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "관리자 로그인을 처리할 수 없습니다."),
+    ADMIN_LOGOUT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "로그아웃을 처리할 수 없습니다."),
+    ADMIN_DASHBOARD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "사용자 통계 정보를 불러올 수 없습니다."),
+    ADMIN_TODAY_REPORT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "당일 신고 건수를 불러올 수 없습니다."),
+    ADMIN_TODAY_SHARE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "당일 나눔 횟수를 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

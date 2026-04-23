@@ -9,6 +9,7 @@ import com.team200.graduation_project.domain.share.dto.response.ShareListRespons
 import com.team200.graduation_project.domain.share.entity.Report;
 import com.team200.graduation_project.domain.share.entity.Share;
 import com.team200.graduation_project.domain.share.entity.SharePicture;
+import com.team200.graduation_project.domain.share.entity.ShareStatus;
 import com.team200.graduation_project.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class ShareConverter {
                 .content(request.getContent())
                 .category(request.getCategory())
                 .expirationDate(request.getExpirationDate())
-                .status("AVAILABLE")
+                .status(ShareStatus.AVAILABLE)
                 .isView(true)
                 .build();
     }

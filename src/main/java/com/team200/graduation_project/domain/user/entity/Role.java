@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserStatus {
-    NORMAL("정상"),
-    WITHDRAWN("탈퇴"),
-    BLOCKED("차단"),
-    WARMING("경고");
+public enum Role {
+    USER("사용자"),
+    ADMIN("관리자");
 
     private final String description;
 }

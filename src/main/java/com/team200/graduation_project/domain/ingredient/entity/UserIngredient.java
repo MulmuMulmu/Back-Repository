@@ -35,8 +35,9 @@ public class UserIngredient {
 
     private LocalDate expirationDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private String status;
+    private UserIngredientStatus status;
 
     public void updateUser(User user) {
         this.user = user;

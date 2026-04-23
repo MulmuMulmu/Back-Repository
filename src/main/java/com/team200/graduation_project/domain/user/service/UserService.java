@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
 import com.team200.graduation_project.domain.user.entity.User;
+import com.team200.graduation_project.domain.user.entity.Role;
 import com.team200.graduation_project.domain.user.entity.UserStatus;
 import com.team200.graduation_project.domain.user.exception.UserErrorCode;
 import com.team200.graduation_project.domain.user.exception.UserException;
@@ -56,9 +57,10 @@ public class UserService {
                     .password(passwordEncoder.encode(request.getPassword()))
                     .nickName(request.getName())
                     .firstLogin(true)
-                    .reportCount(0L)
+                    .warmingCount(0L)
                     .deletedAt(null)
                     .status(UserStatus.NORMAL)
+                    .role(Role.USER)
                     .build();
 
             userRepository.save(user);
@@ -83,9 +85,10 @@ public class UserService {
                         .password(null)
                         .nickName("kakao_user")
                         .firstLogin(true)
-                        .reportCount(0L)
+                        .warmingCount(0L)
                         .deletedAt(null)
                         .status(UserStatus.NORMAL)
+                        .role(Role.USER)
                         .build();
                 userRepository.save(user);
             }
@@ -130,6 +133,10 @@ public class UserService {
                 .findByUserIdIsAndDeletedAtIsNull(request.getId())
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
 
+        if (user.getStatus() != UserStatus.NORMAL) {
+            throw new UserException(UserErrorCode.USER_LOGIN_FAILED);
+        }
+
         if (!StringUtils.hasText(user.getPassword())
                 || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new UserException(UserErrorCode.USER_LOGIN_FAILED);
@@ -149,6 +156,10 @@ public class UserService {
         User user = userRepository
                 .findByUserIdIsAndDeletedAtIsNull(kakaoId)
                 .orElseThrow(() -> new UserException(UserErrorCode.USER_LOGIN_FAILED));
+
+        if (user.getStatus() != UserStatus.NORMAL) {
+            throw new UserException(UserErrorCode.USER_LOGIN_FAILED);
+        }
 
         JwtTokenPair tokenPair = jwtTokenService.issueTokenPair(user.getUserId());
         return new LoginResponse(tokenPair.accessToken(), user.getFirstLogin());
