@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class testController {
 
+    @GetMapping("/test/health-check")
+    public ApiResponse<?> get() {
+        return ApiResponse.onSuccess("server is running");
+    }
+
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("OK");
@@ -25,5 +30,6 @@ public class testController {
         }
         return ApiResponse.onSuccess("로그인 성공!");
     }
+
 
 }
