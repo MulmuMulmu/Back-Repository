@@ -20,6 +20,8 @@ public enum AdminErrorCode {
             "COMMON500", "당일 신고 건수를 불러올 수 없습니다."),
     ADMIN_TODAY_SHARE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "당일 나눔 횟수를 불러올 수 없습니다."),
+    ADMIN_REPORT_LIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "신고 목록을 조회할 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

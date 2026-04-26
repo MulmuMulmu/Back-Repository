@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.controller;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -12,7 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Tag(name = "Admin", description = "관리자 관련 API")
@@ -60,4 +63,15 @@ public interface AdminControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     ApiResponse<AdminTodayShareResponse> getTodayShares(@RequestHeader("Authorization") String token);
+
+    @Operation(summary = "신고 목록 조회", description = "날짜와 처리 상태에 따라 신고 목록을 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "신고 목록을 조회할 수 없습니다.")
+    })
+    ApiResponse<AdminReportListResponse> getReportList(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("Date") LocalDate date,
+            @RequestParam("type") String type
+    );
 }

@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.service;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -10,6 +11,8 @@ import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
 import com.team200.graduation_project.domain.admin.exception.AdminException;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
+import com.team200.graduation_project.domain.share.entity.Report;
+import com.team200.graduation_project.domain.share.entity.ReportStatus;
 import com.team200.graduation_project.domain.share.repository.ReportRepository;
 import com.team200.graduation_project.domain.share.repository.ShareRepository;
 import com.team200.graduation_project.domain.user.entity.Role;
@@ -22,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -119,6 +123,38 @@ public class AdminService {
                     .build();
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_TODAY_SHARE_ERROR);
+        }
+    }
+
+    public AdminReportListResponse getReportList(LocalDate date, String type) {
+        try {
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end = date.atTime(LocalTime.MAX);
+
+            List<Report> reports;
+            if ("completed".equalsIgnoreCase(type)) {
+                reports = reportRepository.findAllByCreateTimeBetweenAndStatus(start, end, ReportStatus.COMPLETED);
+            } else if ("notCompleted".equalsIgnoreCase(type)) {
+                reports = reportRepository.findAllByCreateTimeBetweenAndStatus(start, end, ReportStatus.NOT_COMPLETED);
+            } else {
+                reports = reportRepository.findAllByCreateTimeBetween(start, end);
+            }
+
+            List<AdminReportListResponse.ReportItemDTO> reportItems = reports.stream()
+                    .map(report -> AdminReportListResponse.ReportItemDTO.builder()
+                            .reportId(report.getReportId())
+                            .shareId(report.getShare().getShareId())
+                            .reporterName(report.getReporter().getNickName())
+                            .content(report.getContent())
+                            .status(report.getStatus().getDescription())
+                            .build())
+                    .collect(Collectors.toList());
+
+            return AdminReportListResponse.builder()
+                    .reports(reportItems)
+                    .build();
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_REPORT_LIST_ERROR);
         }
     }
 }

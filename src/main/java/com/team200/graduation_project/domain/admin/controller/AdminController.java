@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.controller;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -64,5 +67,15 @@ public class AdminController implements AdminControllerDocs {
     @GetMapping("/dashboard/today/share")
     public ApiResponse<AdminTodayShareResponse> getTodayShares(@RequestHeader("Authorization") String token) {
         return ApiResponse.onSuccess(adminService.getTodayShares());
+    }
+
+    @Override
+    @GetMapping("/report/list")
+    public ApiResponse<AdminReportListResponse> getReportList(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("Date") LocalDate date,
+            @RequestParam("type") String type
+    ) {
+        return ApiResponse.onSuccess(adminService.getReportList(date, type));
     }
 }

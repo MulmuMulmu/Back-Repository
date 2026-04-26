@@ -35,6 +35,10 @@ public class Report {
     private String content;
 
     private LocalDateTime createTime;
+    
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ReportStatus status = ReportStatus.NOT_COMPLETED;
 
     @PrePersist
     protected void onCreate() {
