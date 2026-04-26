@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.service;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
@@ -194,6 +195,31 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_SHARE_MASKING_ERROR);
+        }
+    }
+
+    public String takeActionAgainstUser(AdminUserActionRequest request) {
+        try {
+            User user = userRepository.findByUserIdIsAndDeletedAtIsNull(request.getUserId())
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_USER_ACTION_ERROR));
+
+            String resultMessage;
+            if ("영구정지".equals(request.getStatus())) {
+                user.block();
+                resultMessage = "사용자가 영구 정지 되었습니다.";
+            } else if ("사용자 경고".equals(request.getStatus())) {
+                user.addWarning();
+                resultMessage = "사용자에게 경고 하나를 부여했습니다.";
+            } else {
+                throw new AdminException(AdminErrorCode.ADMIN_USER_ACTION_ERROR);
+            }
+
+            userRepository.save(user);
+            return resultMessage;
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_USER_ACTION_ERROR);
         }
     }
 }

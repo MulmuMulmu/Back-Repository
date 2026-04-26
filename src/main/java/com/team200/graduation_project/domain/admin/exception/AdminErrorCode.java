@@ -26,6 +26,8 @@ public enum AdminErrorCode {
             "COMMON500", "신고 내역 한 건을 자세히 불러올 수 없습니다."),
     ADMIN_SHARE_MASKING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "게시글을 숨김 처리 할 수 없습니다."),
+    ADMIN_USER_ACTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "사용자 상태를 변경할 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

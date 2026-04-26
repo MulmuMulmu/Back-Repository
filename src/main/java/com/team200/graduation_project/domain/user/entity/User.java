@@ -55,4 +55,16 @@ public class User {
         this.status = UserStatus.WITHDRAWN;
     }
 
+    public void block() {
+        this.status = UserStatus.BLOCKED;
+    }
+
+    public void addWarning() {
+        if (this.warmingCount == null) {
+            this.warmingCount = 0L;
+        }
+        this.warmingCount++;
+        this.status = UserStatus.WARMING;
+    }
+
 }

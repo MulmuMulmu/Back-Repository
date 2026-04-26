@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
@@ -95,5 +96,15 @@ public interface AdminControllerDocs {
     ApiResponse<String> maskSharePost(
             @RequestHeader("Authorization") String token,
             @RequestParam("shareId") UUID shareId
+    );
+
+    @Operation(summary = "신고 사용자 조치", description = "신고된 사용자에게 경고를 부여하거나 영구 정지 처리를 합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "사용자 상태를 변경할 수 없습니다.")
+    })
+    ApiResponse<String> takeActionAgainstUser(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AdminUserActionRequest request
     );
 }

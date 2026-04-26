@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
@@ -12,6 +13,7 @@ import com.team200.graduation_project.domain.admin.service.AdminService;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -91,12 +93,21 @@ public class AdminController implements AdminControllerDocs {
     }
 
     @Override
-    @PostMapping("/report/post/masking")
+    @PatchMapping("/report/post/masking")
     public ApiResponse<String> maskSharePost(
             @RequestHeader("Authorization") String token,
             @RequestParam("shareId") UUID shareId
     ) {
         adminService.maskSharePost(shareId);
         return ApiResponse.onSuccess("게시글이 숨김 처리 되었습니다.");
+    }
+
+    @Override
+    @PatchMapping("/report/users")
+    public ApiResponse<String> takeActionAgainstUser(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AdminUserActionRequest request
+    ) {
+        return ApiResponse.onSuccess(adminService.takeActionAgainstUser(request));
     }
 }
