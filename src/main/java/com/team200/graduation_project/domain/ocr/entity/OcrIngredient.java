@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.Length;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
@@ -28,8 +29,7 @@ public class OcrIngredient {
     @JoinColumn(name = "ocrId")
     private Ocr ocrId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredientId")
-    private Ingredient ingredient;
+    @Column(length = 100)
+    private String ocrIngredientName;
 
 }
