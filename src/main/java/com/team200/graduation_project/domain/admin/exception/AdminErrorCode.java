@@ -32,6 +32,8 @@ public enum AdminErrorCode {
             "COMMON500", "나눔 정보를 불러올 수 없습니다."),
     ADMIN_USER_LIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "사용자 리스트를 불러올 수 없습니다."),
+    ADMIN_USER_SHARE_LIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "사용자의 나눔 리스트를 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

@@ -9,6 +9,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminReportListR
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
 import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
@@ -280,6 +281,28 @@ public class AdminService {
             return result;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_USER_LIST_ERROR);
+        }
+    }
+
+    public List<AdminUserShareListResponse> getUserShareList(String userId) {
+        try {
+            User user = userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_USER_SHARE_LIST_ERROR));
+
+            List<Share> shares = shareRepository.findAllByUserAndDeletedAtIsNullOrderByCreateTimeDesc(user);
+
+            return shares.stream()
+                    .map(share -> AdminUserShareListResponse.builder()
+                            .shareId(share.getShareId())
+                            .image(share.getSharePicture() != null ? share.getSharePicture().getPictureUrl() : null)
+                            .title(share.getTitle())
+                            .content(share.getContent())
+                            .build())
+                    .collect(Collectors.toList());
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_USER_SHARE_LIST_ERROR);
         }
     }
 }

@@ -25,4 +25,7 @@ public interface ShareRepository extends JpaRepository<Share, UUID> {
     long countByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
 
     long countByUserAndDeletedAtIsNull(com.team200.graduation_project.domain.user.entity.User user);
+
+    @Query("SELECT s FROM Share s LEFT JOIN FETCH s.sharePicture WHERE s.user = :user AND s.deletedAt IS NULL ORDER BY s.createTime DESC")
+    List<Share> findAllByUserAndDeletedAtIsNullOrderByCreateTimeDesc(com.team200.graduation_project.domain.user.entity.User user);
 }
