@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
@@ -16,6 +17,9 @@ import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
 import com.team200.graduation_project.domain.admin.exception.AdminException;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
+import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
+import com.team200.graduation_project.domain.ocr.entity.Ocr;
+import com.team200.graduation_project.domain.ocr.repository.OcrRepository;
 import com.team200.graduation_project.domain.share.entity.Report;
 import com.team200.graduation_project.domain.share.entity.ReportStatus;
 import com.team200.graduation_project.domain.share.entity.Share;
@@ -46,6 +50,8 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final IngredientRepository ingredientRepository;
+    private final UserIngredientRepository userIngredientRepository;
+    private final OcrRepository ocrRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
@@ -303,6 +309,21 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_USER_SHARE_LIST_ERROR);
+        }
+    }
+
+    public List<AdminOcrListResponse> getOcrList() {
+        try {
+            return ocrRepository.findAll().stream()
+                    .map(ocr -> AdminOcrListResponse.builder()
+                            .ocrId(ocr.getOcrId())
+                            .nickName(ocr.getUser() != null ? ocr.getUser().getNickName() : null)
+                            .createTime(ocr.getCreateTime())
+                            .accuracy(ocr.getAccuracy())
+                            .build())
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_OCR_LIST_ERROR);
         }
     }
 }

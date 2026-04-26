@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
@@ -139,5 +140,14 @@ public interface AdminControllerDocs {
     ApiResponse<List<AdminUserShareListResponse>> getUserShareList(
             @RequestHeader("Authorization") String token,
             @RequestParam("userId") String userId
+    );
+
+    @Operation(summary = "OCR 검수 대기 목록 조회", description = "OCR 검수 대기 목록을 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "OCR 검수 대기 목록을 불러올 수 없습니다.")
+    })
+    ApiResponse<List<AdminOcrListResponse>> getOcrList(
+            @RequestHeader("Authorization") String token
     );
 }

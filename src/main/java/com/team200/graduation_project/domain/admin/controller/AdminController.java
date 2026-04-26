@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
@@ -139,5 +140,13 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam("userId") String userId
     ) {
         return ApiResponse.onSuccess(adminService.getUserShareList(userId));
+    }
+
+    @Override
+    @GetMapping("/ocr/list")
+    public ApiResponse<List<AdminOcrListResponse>> getOcrList(
+            @RequestHeader("Authorization") String token
+    ) {
+        return ApiResponse.onSuccess(adminService.getOcrList());
     }
 }
