@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -59,32 +58,31 @@ public class AdminController implements AdminControllerDocs {
 
     @Override
     @PostMapping("/auth/logout")
-    public ApiResponse<String> logout(@RequestHeader("Authorization") String token) {
+    public ApiResponse<String> logout() {
         return ApiResponse.onSuccess(adminService.logout());
     }
 
     @Override
     @GetMapping("/dashboard/user")
-    public ApiResponse<AdminUserDashboardResponse> getUserDashboard(@RequestHeader("Authorization") String token) {
+    public ApiResponse<AdminUserDashboardResponse> getUserDashboard() {
         return ApiResponse.onSuccess(adminService.getUserDashboard());
     }
 
     @Override
     @GetMapping("/dashboard/today/report")
-    public ApiResponse<AdminTodayReportResponse> getTodayReports(@RequestHeader("Authorization") String token) {
+    public ApiResponse<AdminTodayReportResponse> getTodayReports() {
         return ApiResponse.onSuccess(adminService.getTodayReports());
     }
 
     @Override
     @GetMapping("/dashboard/today/share")
-    public ApiResponse<AdminTodayShareResponse> getTodayShares(@RequestHeader("Authorization") String token) {
+    public ApiResponse<AdminTodayShareResponse> getTodayShares() {
         return ApiResponse.onSuccess(adminService.getTodayShares());
     }
 
     @Override
     @GetMapping("/report/list")
     public ApiResponse<AdminReportListResponse> getReportList(
-            @RequestHeader("Authorization") String token,
             @RequestParam("Date") LocalDate date,
             @RequestParam("type") String type
     ) {
@@ -94,7 +92,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/report/one")
     public ApiResponse<AdminReportDetailResponse> getReportDetail(
-            @RequestHeader("Authorization") String token,
             @RequestParam("reportId") UUID reportId
     ) {
         return ApiResponse.onSuccess(adminService.getReportDetail(reportId));
@@ -103,7 +100,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @PatchMapping("/report/post/masking")
     public ApiResponse<String> maskSharePost(
-            @RequestHeader("Authorization") String token,
             @RequestParam("shareId") UUID shareId
     ) {
         adminService.maskSharePost(shareId);
@@ -113,7 +109,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @PatchMapping("/report/users")
     public ApiResponse<String> takeActionAgainstUser(
-            @RequestHeader("Authorization") String token,
             @RequestBody AdminUserActionRequest request
     ) {
         return ApiResponse.onSuccess(adminService.takeActionAgainstUser(request));
@@ -122,7 +117,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/shares/one")
     public ApiResponse<AdminShareDetailResponse> getShareDetail(
-            @RequestHeader("Authorization") String token,
             @RequestParam("shareId") UUID shareId
     ) {
         return ApiResponse.onSuccess(adminService.getShareDetail(shareId));
@@ -131,7 +125,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/users/list")
     public ApiResponse<List<AdminUserListResponse>> getUserList(
-            @RequestHeader("Authorization") String token,
             @RequestParam("userId") String userId
     ) {
         return ApiResponse.onSuccess(adminService.getUserList(userId));
@@ -140,7 +133,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/users/shares/list")
     public ApiResponse<List<AdminUserShareListResponse>> getUserShareList(
-            @RequestHeader("Authorization") String token,
             @RequestParam("userId") String userId
     ) {
         return ApiResponse.onSuccess(adminService.getUserShareList(userId));
@@ -148,16 +140,13 @@ public class AdminController implements AdminControllerDocs {
 
     @Override
     @GetMapping("/ocr/list")
-    public ApiResponse<List<AdminOcrListResponse>> getOcrList(
-            @RequestHeader("Authorization") String token
-    ) {
+    public ApiResponse<List<AdminOcrListResponse>> getOcrList() {
         return ApiResponse.onSuccess(adminService.getOcrList());
     }
 
     @Override
     @GetMapping("/ocr/one")
     public ApiResponse<AdminOcrDetailResponse> getOcrDetail(
-            @RequestHeader("Authorization") String token,
             @RequestParam("ocrId") UUID ocrId
     ) {
         return ApiResponse.onSuccess(adminService.getOcrDetail(ocrId));
@@ -166,7 +155,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/ocr/one/ingredients")
     public ApiResponse<List<AdminOcrIngredientResponse>> getOcrIngredients(
-            @RequestHeader("Authorization") String token,
             @RequestParam("ocrId") UUID ocrId
     ) {
         return ApiResponse.onSuccess(adminService.getOcrIngredients(ocrId));
@@ -175,7 +163,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @PostMapping("/ocr/accuracy")
     public ApiResponse<String> updateOcrAccuracy(
-            @RequestHeader("Authorization") String token,
             @RequestBody AdminOcrAccuracyRequest request
     ) {
         return ApiResponse.onSuccess(adminService.updateOcrAccuracy(request));
@@ -184,7 +171,6 @@ public class AdminController implements AdminControllerDocs {
     @Override
     @GetMapping("/data/statistics")
     public ApiResponse<List<AdminDataStatisticsResponse>> getDataStatistics(
-            @RequestHeader("Authorization") String token,
             @RequestParam("startDate") LocalDate startDate,
             @RequestParam("endDate") LocalDate endDate
     ) {

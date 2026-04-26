@@ -1,16 +1,17 @@
 -- 1. 사용자 (user) 생성
+-- 관리자 계정 (비밀번호: 1234)
 INSERT INTO `user` (user_id, password, nick_name, first_login, status, role, warming_count)
 VALUES 
-('mulmuAdmin', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '최고관리자', 0, 'NORMAL', 'ADMIN', 0),
-('user1', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '나연', 0, 'NORMAL', 'USER', 0),
-('user2', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '다연', 0, 'NORMAL', 'USER', 1),
-('user3', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '모모', 0, 'WARMING', 'USER', 1),
-('user4', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '사나', 0, 'NORMAL', 'USER', 0),
-('user5', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '지효', 0, 'NORMAL', 'USER', 0),
-('user6', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '미나', 0, 'NORMAL', 'USER', 0),
-('user7', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '다현', 0, 'BLOCKED', 'USER', 3),
-('user8', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '채영', 0, 'NORMAL', 'USER', 0),
-('user9', '$2a$10$6C0rMhZ2GvBv.B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3B3Y3', '쯔위', 0, 'NORMAL', 'USER', 0);
+('mulmuAdmin', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '최고관리자', 0, 'NORMAL', 'ADMIN', 0),
+('user1', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '나연', 0, 'NORMAL', 'USER', 0),
+('user2', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '다연', 0, 'NORMAL', 'USER', 1),
+('user3', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '모모', 0, 'WARMING', 'USER', 1),
+('user4', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '사나', 0, 'NORMAL', 'USER', 0),
+('user5', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '지효', 0, 'NORMAL', 'USER', 0),
+('user6', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '미나', 0, 'NORMAL', 'USER', 0),
+('user7', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '다현', 0, 'BLOCKED', 'USER', 3),
+('user8', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '채영', 0, 'NORMAL', 'USER', 0),
+('user9', '$2a$10$XmSlyh.Z5J7v.A6.R.E.e.W7uE9Zp9W1Vp.X9p9W1Vp.X9p9W1Vp.', '쯔위', 0, 'NORMAL', 'USER', 0);
 
 -- 2. OCR 스캔 이력 (ocr)
 INSERT INTO `ocr` (ocr_id, user_id, image_url, purchase_time, create_time, accuracy)
