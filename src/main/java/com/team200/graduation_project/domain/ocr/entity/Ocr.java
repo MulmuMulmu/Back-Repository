@@ -27,6 +27,8 @@ public class Ocr {
 
     private String imageUrl;
 
+    private LocalDateTime purchaseTime;
+
     private LocalDateTime createTime;
 
     private Double accuracy;

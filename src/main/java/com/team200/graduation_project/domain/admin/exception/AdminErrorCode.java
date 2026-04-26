@@ -36,6 +36,8 @@ public enum AdminErrorCode {
             "COMMON500", "사용자의 나눔 리스트를 불러올 수 없습니다."),
     ADMIN_OCR_LIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "OCR 검수 대기 목록을 불러올 수 없습니다."),
+    ADMIN_OCR_DETAIL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "OCR 검수 한 건을 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 

@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
@@ -149,5 +150,15 @@ public interface AdminControllerDocs {
     })
     ApiResponse<List<AdminOcrListResponse>> getOcrList(
             @RequestHeader("Authorization") String token
+    );
+
+    @Operation(summary = "OCR 상세 조회", description = "OCR 검수 한 건을 상세하게 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "OCR 검수 한 건을 불러올 수 없습니다.")
+    })
+    ApiResponse<AdminOcrDetailResponse> getOcrDetail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("ocrId") UUID ocrId
     );
 }

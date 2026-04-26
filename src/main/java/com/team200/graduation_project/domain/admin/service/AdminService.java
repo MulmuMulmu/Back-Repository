@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
@@ -324,6 +325,25 @@ public class AdminService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_OCR_LIST_ERROR);
+        }
+    }
+
+    public AdminOcrDetailResponse getOcrDetail(UUID ocrId) {
+        try {
+            Ocr ocr = ocrRepository.findById(ocrId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_OCR_DETAIL_ERROR));
+
+            return AdminOcrDetailResponse.builder()
+                    .receiptImage(ocr.getImageUrl())
+                    .purchaseTime(ocr.getPurchaseTime())
+                    .createTime(ocr.getCreateTime())
+                    .nickName(ocr.getUser() != null ? ocr.getUser().getNickName() : null)
+                    .accuracy(ocr.getAccuracy())
+                    .build();
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_OCR_DETAIL_ERROR);
         }
     }
 }
