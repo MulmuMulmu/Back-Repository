@@ -19,6 +19,8 @@ import com.team200.graduation_project.domain.share.exception.ShareErrorCode;
 import com.team200.graduation_project.domain.share.exception.ShareException;
 import com.team200.graduation_project.domain.share.repository.ReportRepository;
 import com.team200.graduation_project.domain.share.repository.SharePictureRepository;
+import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
+import com.team200.graduation_project.domain.ingredient.entity.IngredientSource;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredientStatus;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
@@ -380,6 +382,7 @@ public class ShareService {
                         .ingredient(giverIngredient.getIngredient())
                         .expirationDate(giverIngredient.getExpirationDate())
                         .status(UserIngredientStatus.NORMAL)
+                        .source(IngredientSource.SHARE)
                         .build();
                 userIngredientRepository.save(takerIngredient);
             } else {

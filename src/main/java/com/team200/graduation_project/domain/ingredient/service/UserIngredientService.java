@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.ingredient.service;
 
 import com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientInputRequest;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
+import com.team200.graduation_project.domain.ingredient.entity.IngredientSource;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredientStatus;
 import com.team200.graduation_project.domain.ingredient.exception.IngredientErrorCode;
@@ -52,7 +53,8 @@ public class UserIngredientService {
                         .user(user)
                         .ingredient(ingredient)
                         .expirationDate(request.getExpirationDate())
-                        .status(UserIngredientStatus.NORMAL) // Or leave null, using a default value based on current context
+                        .status(UserIngredientStatus.NORMAL)
+                        .source(IngredientSource.MANUAL)
                         .build();
             }).collect(Collectors.toList());
 

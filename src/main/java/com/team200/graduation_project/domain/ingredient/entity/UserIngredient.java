@@ -1,5 +1,6 @@
 package com.team200.graduation_project.domain.ingredient.entity;
 
+import com.team200.graduation_project.domain.ocr.entity.OcrIngredient;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -38,6 +39,14 @@ public class UserIngredient {
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
     private UserIngredientStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private IngredientSource source;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ocrIngredientId")
+    private OcrIngredient ocrIngredient;
 
     public void updateUser(User user) {
         this.user = user;

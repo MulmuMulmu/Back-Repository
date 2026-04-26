@@ -1,8 +1,8 @@
 package com.team200.graduation_project.domain.ocr.entity;
 
-import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +16,8 @@ import java.util.UUID;
 @Table(name = "`OcrIngredient`")
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OcrIngredient {
 
     @Id
@@ -27,7 +27,7 @@ public class OcrIngredient {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ocrId")
-    private Ocr ocrId;
+    private Ocr ocr;
 
     @Column(length = 100)
     private String ocrIngredientName;
