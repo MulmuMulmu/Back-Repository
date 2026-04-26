@@ -90,4 +90,7 @@ public class Share {
         this.status = status;
     }
 
+    public void mask() {
+        this.isView = false;
+    }
 }

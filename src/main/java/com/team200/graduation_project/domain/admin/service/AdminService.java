@@ -14,6 +14,7 @@ import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.share.entity.Report;
 import com.team200.graduation_project.domain.share.entity.ReportStatus;
+import com.team200.graduation_project.domain.share.entity.Share;
 import com.team200.graduation_project.domain.share.repository.ReportRepository;
 import com.team200.graduation_project.domain.share.repository.ShareRepository;
 import com.team200.graduation_project.domain.user.entity.Role;
@@ -179,6 +180,20 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_REPORT_DETAIL_ERROR);
+        }
+    }
+
+    public void maskSharePost(UUID shareId) {
+        try {
+            Share share = shareRepository.findById(shareId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_SHARE_MASKING_ERROR));
+
+            share.mask();
+            shareRepository.save(share);
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_SHARE_MASKING_ERROR);
         }
     }
 }

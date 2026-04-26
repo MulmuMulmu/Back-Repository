@@ -86,4 +86,14 @@ public interface AdminControllerDocs {
             @RequestHeader("Authorization") String token,
             @RequestParam("reportId") UUID reportId
     );
+
+    @Operation(summary = "신고 게시글 숨김 처리", description = "신고된 게시글을 숨김 처리하여 다른 사용자가 볼 수 없게 합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "게시글이 숨김 처리 되었습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "게시글을 숨김 처리 할 수 없습니다.")
+    })
+    ApiResponse<String> maskSharePost(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("shareId") UUID shareId
+    );
 }

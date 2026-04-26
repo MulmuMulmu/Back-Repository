@@ -89,4 +89,14 @@ public class AdminController implements AdminControllerDocs {
     ) {
         return ApiResponse.onSuccess(adminService.getReportDetail(reportId));
     }
+
+    @Override
+    @PostMapping("/report/post/masking")
+    public ApiResponse<String> maskSharePost(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("shareId") UUID shareId
+    ) {
+        adminService.maskSharePost(shareId);
+        return ApiResponse.onSuccess("게시글이 숨김 처리 되었습니다.");
+    }
 }
