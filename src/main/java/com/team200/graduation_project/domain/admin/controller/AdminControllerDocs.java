@@ -62,7 +62,7 @@ public interface AdminControllerDocs {
     })
     ApiResponse<AdminUserDashboardResponse> getUserDashboard();
 
-    @Operation(summary = "당일 신고 건수 조회", description = "관리자 대시보드에서 당일 신고된 전체 건수를 조회합니다.")
+    @Operation(summary = "당일 신고 건수 조회", description = "관리자 대시보드에서 당일 신고된 전체 건수, 미완료 건수, 완료 건수를 조회합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error")

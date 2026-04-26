@@ -125,9 +125,13 @@ public class AdminService {
             LocalDateTime end = LocalDateTime.now().with(LocalTime.MAX);
 
             Long todayReports = reportRepository.countByCreateTimeBetween(start, end);
+            Long notCompletedReports = reportRepository.countByCreateTimeBetweenAndStatus(start, end, ReportStatus.NOT_COMPLETED);
+            Long completedReports = reportRepository.countByCreateTimeBetweenAndStatus(start, end, ReportStatus.COMPLETED);
 
             return AdminTodayReportResponse.builder()
                     .todayReports(todayReports)
+                    .notCompletedReports(notCompletedReports)
+                    .completedReports(completedReports)
                     .build();
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_TODAY_REPORT_ERROR);

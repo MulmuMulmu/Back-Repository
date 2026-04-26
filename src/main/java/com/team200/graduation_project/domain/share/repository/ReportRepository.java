@@ -13,6 +13,8 @@ public interface ReportRepository extends JpaRepository<Report, UUID> {
 
     long countByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
 
+    long countByCreateTimeBetweenAndStatus(LocalDateTime start, LocalDateTime end, ReportStatus status);
+
     java.util.List<Report> findAllByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
 
     java.util.List<Report> findAllByCreateTimeBetweenAndStatus(LocalDateTime start, LocalDateTime end, ReportStatus status);

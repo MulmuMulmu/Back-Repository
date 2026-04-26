@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AdminTodayReportResponse {
     private Long todayReports;
+    private Long notCompletedReports;
+    private Long completedReports;
 }
