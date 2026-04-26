@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRe
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -220,6 +221,32 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_USER_ACTION_ERROR);
+        }
+    }
+
+    public AdminShareDetailResponse getShareDetail(UUID shareId) {
+        try {
+            Share share = shareRepository.findById(shareId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_SHARE_DETAIL_ERROR));
+
+            String imageUrl = share.getSharePicture() != null ? share.getSharePicture().getPictureUrl() : null;
+            String ingredientName = share.getUserIngredient() != null && share.getUserIngredient().getIngredient() != null 
+                    ? share.getUserIngredient().getIngredient().getIngredientName() 
+                    : null;
+
+            return AdminShareDetailResponse.builder()
+                    .image(imageUrl)
+                    .sellerName(share.getUser().getNickName())
+                    .title(share.getTitle())
+                    .category(share.getCategory())
+                    .description(share.getContent())
+                    .ingredient(ingredientName)
+                    .createTime(share.getCreateTime())
+                    .build();
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_SHARE_DETAIL_ERROR);
         }
     }
 }

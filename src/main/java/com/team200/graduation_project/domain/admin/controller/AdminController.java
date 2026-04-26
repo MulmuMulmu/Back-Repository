@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRe
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -109,5 +110,14 @@ public class AdminController implements AdminControllerDocs {
             @RequestBody AdminUserActionRequest request
     ) {
         return ApiResponse.onSuccess(adminService.takeActionAgainstUser(request));
+    }
+
+    @Override
+    @GetMapping("/shares/one")
+    public ApiResponse<AdminShareDetailResponse> getShareDetail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("shareId") UUID shareId
+    ) {
+        return ApiResponse.onSuccess(adminService.getShareDetail(shareId));
     }
 }

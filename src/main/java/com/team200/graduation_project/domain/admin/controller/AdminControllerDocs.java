@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRe
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -106,5 +107,15 @@ public interface AdminControllerDocs {
     ApiResponse<String> takeActionAgainstUser(
             @RequestHeader("Authorization") String token,
             @RequestBody AdminUserActionRequest request
+    );
+
+    @Operation(summary = "나눔글 상세 조회", description = "나눔글 한 건을 상세하게 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "나눔 정보를 불러올 수 없습니다.")
+    })
+    ApiResponse<AdminShareDetailResponse> getShareDetail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("shareId") UUID shareId
     );
 }
