@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetai
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrIngredientResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserShareListResponse;
@@ -158,5 +159,14 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam("ocrId") UUID ocrId
     ) {
         return ApiResponse.onSuccess(adminService.getOcrDetail(ocrId));
+    }
+
+    @Override
+    @GetMapping("/ocr/one/ingredients")
+    public ApiResponse<List<AdminOcrIngredientResponse>> getOcrIngredients(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("ocrId") UUID ocrId
+    ) {
+        return ApiResponse.onSuccess(adminService.getOcrIngredients(ocrId));
     }
 }

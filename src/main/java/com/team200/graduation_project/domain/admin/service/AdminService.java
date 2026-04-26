@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetai
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminOcrIngredientResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
@@ -20,6 +21,7 @@ import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
 import com.team200.graduation_project.domain.ocr.entity.Ocr;
+import com.team200.graduation_project.domain.ocr.repository.OcrIngredientRepository;
 import com.team200.graduation_project.domain.ocr.repository.OcrRepository;
 import com.team200.graduation_project.domain.share.entity.Report;
 import com.team200.graduation_project.domain.share.entity.ReportStatus;
@@ -53,6 +55,7 @@ public class AdminService {
     private final IngredientRepository ingredientRepository;
     private final UserIngredientRepository userIngredientRepository;
     private final OcrRepository ocrRepository;
+    private final OcrIngredientRepository ocrIngredientRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
@@ -344,6 +347,24 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_OCR_DETAIL_ERROR);
+        }
+    }
+
+    public List<AdminOcrIngredientResponse> getOcrIngredients(UUID ocrId) {
+        try {
+            Ocr ocr = ocrRepository.findById(ocrId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_OCR_DETAIL_ERROR));
+
+            return ocrIngredientRepository.findAllByOcr(ocr).stream()
+                    .map(ocrIngredient -> AdminOcrIngredientResponse.builder()
+                            .itemName(ocrIngredient.getOcrIngredientName())
+                            .quantity(ocrIngredient.getQuantity())
+                            .build())
+                    .collect(Collectors.toList());
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_LIST_ERROR);
         }
     }
 }

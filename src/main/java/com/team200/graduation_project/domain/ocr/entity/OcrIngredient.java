@@ -32,4 +32,6 @@ public class OcrIngredient {
     @Column(length = 100)
     private String ocrIngredientName;
 
+    private Integer quantity;
+
 }
