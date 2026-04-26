@@ -23,6 +23,7 @@ public class SwaggerConfig {
                         .bearerFormat("JWT"));
 
         return new OpenAPI()
+                .addServersItem(new io.swagger.v3.oas.models.servers.Server().url("/"))
                 .info(new Info()
                         .title("Graduation Project API")
                         .description("졸업 작품 프로젝트를 위한 스웨거 문서입니다.")
