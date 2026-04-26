@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -148,7 +149,7 @@ public class ShareService {
 
             // 4. Upload image and save SharePicture entity
             if (request.getImage() != null && !request.getImage().isEmpty()) {
-                String url = uploadToGcp(request.getImage());
+                String url = uploadToGcp(request.getImage(), user.getUserId());
                 SharePicture picture = shareConverter.toSharePicture(url, share);
                 sharePictureRepository.save(picture);
             }
@@ -169,9 +170,10 @@ public class ShareService {
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
     }
 
-    private String uploadToGcp(MultipartFile file) throws IOException {
+    private String uploadToGcp(MultipartFile file, String userId) throws IOException {
         String uuid = UUID.randomUUID().toString();
-        String fileName = uuid + "_" + file.getOriginalFilename();
+        String date = LocalDate.now().toString();
+        String fileName = String.format("share/%s/%s/%s_%s", userId, date, uuid, file.getOriginalFilename());
         String contentType = file.getContentType();
 
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName)
@@ -297,7 +299,7 @@ public class ShareService {
 
             // Update image if a new file is uploaded
             if (request.getImage() != null && !request.getImage().isEmpty()) {
-                String imageUrl = uploadToGcp(request.getImage());
+                String imageUrl = uploadToGcp(request.getImage(), user.getUserId());
                 if (share.getSharePicture() != null) {
                     share.getSharePicture().updateUrl(imageUrl);
                 } else {
