@@ -23,4 +23,6 @@ public interface ShareRepository extends JpaRepository<Share, UUID> {
     List<Share> findAllByUserAndStatusOrderByCreateTimeDesc(com.team200.graduation_project.domain.user.entity.User user, ShareStatus status);
 
     long countByCreateTimeBetween(LocalDateTime start, LocalDateTime end);
+
+    long countByUserAndDeletedAtIsNull(com.team200.graduation_project.domain.user.entity.User user);
 }

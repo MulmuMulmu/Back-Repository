@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetai
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
 import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
@@ -32,6 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -247,6 +250,36 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_SHARE_DETAIL_ERROR);
+        }
+    }
+
+    public List<AdminUserListResponse> getUserList(String userId) {
+        try {
+            List<User> users;
+            if ("all".equals(userId)) {
+                users = userRepository.findAllByDeletedAtIsNull();
+            } else {
+                users = userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
+                        .map(Collections::singletonList)
+                        .orElse(Collections.emptyList());
+            }
+
+            List<AdminUserListResponse> result = new ArrayList<>();
+            for (int i = 0; i < users.size(); i++) {
+                User user = users.get(i);
+                Long totalShare = shareRepository.countByUserAndDeletedAtIsNull(user);
+
+                result.add(AdminUserListResponse.builder()
+                        .number(i + 1)
+                        .userId(user.getUserId())
+                        .nickName(user.getNickName())
+                        .totalWarming(user.getWarmingCount() != null ? user.getWarmingCount() : 0L)
+                        .totalShare(totalShare)
+                        .build());
+            }
+            return result;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_USER_LIST_ERROR);
         }
     }
 }

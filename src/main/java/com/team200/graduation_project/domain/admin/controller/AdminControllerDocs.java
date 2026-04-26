@@ -7,6 +7,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminUserListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboardResponse;
@@ -117,5 +118,15 @@ public interface AdminControllerDocs {
     ApiResponse<AdminShareDetailResponse> getShareDetail(
             @RequestHeader("Authorization") String token,
             @RequestParam("shareId") UUID shareId
+    );
+
+    @Operation(summary = "사용자 리스트 조회", description = "사용자 리스트를 조회합니다. userId가 'all'이면 전체 조회를 수행합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "사용자 리스트를 불러올 수 없습니다.")
+    })
+    ApiResponse<List<AdminUserListResponse>> getUserList(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("userId") String userId
     );
 }
