@@ -23,5 +23,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     long countByStatus(UserStatus status);
 
     Long countByRole(Role role);
+    
+    java.util.List<User> findAllByRoleAndDeletedAtIsNull(Role role);
 
 }

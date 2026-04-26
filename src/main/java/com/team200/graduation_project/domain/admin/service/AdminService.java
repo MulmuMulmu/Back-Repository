@@ -272,9 +272,10 @@ public class AdminService {
         try {
             List<User> users;
             if ("all".equals(userId)) {
-                users = userRepository.findAllByDeletedAtIsNull();
+                users = userRepository.findAllByRoleAndDeletedAtIsNull(Role.USER);
             } else {
                 users = userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
+                        .filter(user -> user.getRole() == Role.USER)
                         .map(Collections::singletonList)
                         .orElse(Collections.emptyList());
             }
