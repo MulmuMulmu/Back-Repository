@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminDataStatisticsResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrIngredientResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
@@ -182,5 +183,16 @@ public interface AdminControllerDocs {
     ApiResponse<String> updateOcrAccuracy(
             @RequestHeader("Authorization") String token,
             @RequestBody AdminOcrAccuracyRequest request
+    );
+
+    @Operation(summary = "식재료 수집 데이터 통계 조회", description = "특정 기간 동안의 식재료 수집 데이터 통계를 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "OCR 데이터 통계를 불러올 수 없습니다.")
+    })
+    ApiResponse<List<AdminDataStatisticsResponse>> getDataStatistics(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("endDate") LocalDate endDate
     );
 }

@@ -19,4 +19,5 @@ public interface UserIngredientRepository extends JpaRepository<UserIngredient, 
     List<UserIngredient> findByUserAndIngredient_IngredientName(User user, String ingredientName);
     int countByUserAndExpirationDateBetween(User user, java.time.LocalDate startDate, java.time.LocalDate endDate);
     int countByUserAndExpirationDateLessThanEqual(User user, java.time.LocalDate date);
+    List<UserIngredient> findAllByCreateTimeBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
 }

@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.ingredient.entity;
 import com.team200.graduation_project.domain.ocr.entity.OcrIngredient;
 import com.team200.graduation_project.domain.user.entity.User;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +48,13 @@ public class UserIngredient {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ocrIngredientId")
     private OcrIngredient ocrIngredient;
+
+    private LocalDateTime createTime;
+
+    @PrePersist
+    public void prePersist() {
+        this.createTime = LocalDateTime.now();
+    }
 
     public void updateUser(User user) {
         this.user = user;

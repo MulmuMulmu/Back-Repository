@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminDataStatisticsResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrIngredientResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
@@ -19,6 +20,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboa
 import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
 import com.team200.graduation_project.domain.admin.exception.AdminException;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
+import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
 import com.team200.graduation_project.domain.ocr.entity.Ocr;
@@ -42,10 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -381,6 +380,50 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_OCR_ACCURACY_UPDATE_ERROR);
+        }
+    }
+
+    public List<AdminDataStatisticsResponse> getDataStatistics(LocalDate startDate, LocalDate endDate) {
+        try {
+            LocalDateTime start = startDate.atStartOfDay();
+            LocalDateTime end = endDate.atTime(LocalTime.MAX);
+
+            List<UserIngredient> ingredients = userIngredientRepository.findAllByCreateTimeBetween(start, end);
+
+            // Group by date and then by ingredient name
+            Map<LocalDate, Map<String, Long>> groupedData = ingredients.stream()
+                    .collect(Collectors.groupingBy(
+                            ui -> ui.getCreateTime().toLocalDate(),
+                            Collectors.groupingBy(
+                                    ui -> ui.getIngredient().getIngredientName(),
+                                    Collectors.counting()
+                            )
+                    ));
+
+            List<AdminDataStatisticsResponse> results = new ArrayList<>();
+
+            groupedData.forEach((date, counts) -> {
+                List<Map.Entry<String, Long>> sortedEntries = counts.entrySet().stream()
+                        .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                        .collect(Collectors.toList());
+
+                long dayTotal = counts.values().stream().mapToLong(Long::longValue).sum();
+
+                results.add(AdminDataStatisticsResponse.builder()
+                        .date(date)
+                        .rank1(sortedEntries.size() > 0 ? List.of(sortedEntries.get(0).getKey(), sortedEntries.get(0).getValue()) : List.of("", 0L))
+                        .rank2(sortedEntries.size() > 1 ? List.of(sortedEntries.get(1).getKey(), sortedEntries.get(1).getValue()) : List.of("", 0L))
+                        .rank3(sortedEntries.size() > 2 ? List.of(sortedEntries.get(2).getKey(), sortedEntries.get(2).getValue()) : List.of("", 0L))
+                        .total(dayTotal)
+                        .build());
+            });
+
+            // Sort by date
+            Collections.sort(results, (a, b) -> a.getDate().compareTo(b.getDate()));
+
+            return results;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_DATA_STATISTICS_ERROR);
         }
     }
 }

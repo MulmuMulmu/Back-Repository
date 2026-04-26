@@ -8,6 +8,7 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminLoginRespon
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminShareDetailResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminDataStatisticsResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrIngredientResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminOcrListResponse;
@@ -178,5 +179,15 @@ public class AdminController implements AdminControllerDocs {
             @RequestBody AdminOcrAccuracyRequest request
     ) {
         return ApiResponse.onSuccess(adminService.updateOcrAccuracy(request));
+    }
+
+    @Override
+    @GetMapping("/data/statistics")
+    public ApiResponse<List<AdminDataStatisticsResponse>> getDataStatistics(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("endDate") LocalDate endDate
+    ) {
+        return ApiResponse.onSuccess(adminService.getDataStatistics(startDate, endDate));
     }
 }

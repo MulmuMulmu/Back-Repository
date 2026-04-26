@@ -42,6 +42,8 @@ public enum AdminErrorCode {
             "COMMON500", "OCR로 스캔한 식재료 품목을 불러올 수 없습니다."),
     ADMIN_OCR_ACCURACY_UPDATE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "ocr 정확도를 수정할 수 없습니다."),
+    ADMIN_DATA_STATISTICS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
+            "COMMON500", "OCR 데이터 통계를 불러올 수 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "예기치 않은 서버 에러가 발생했습니다.");
 
