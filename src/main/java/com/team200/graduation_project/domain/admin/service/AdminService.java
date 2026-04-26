@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.service;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -365,6 +366,21 @@ public class AdminService {
             throw e;
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_LIST_ERROR);
+        }
+    }
+
+    public String updateOcrAccuracy(AdminOcrAccuracyRequest request) {
+        try {
+            Ocr ocr = ocrRepository.findById(request.getOcrId())
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_OCR_ACCURACY_UPDATE_ERROR));
+
+            ocr.updateAccuracy(request.getAccuracy());
+            ocrRepository.save(ocr);
+            return "ocr 정확도가 수정 완료되었습니다.";
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_OCR_ACCURACY_UPDATE_ERROR);
         }
     }
 }

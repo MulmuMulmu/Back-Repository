@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -168,5 +169,14 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam("ocrId") UUID ocrId
     ) {
         return ApiResponse.onSuccess(adminService.getOcrIngredients(ocrId));
+    }
+
+    @Override
+    @PostMapping("/ocr/accuracy")
+    public ApiResponse<String> updateOcrAccuracy(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AdminOcrAccuracyRequest request
+    ) {
+        return ApiResponse.onSuccess(adminService.updateOcrAccuracy(request));
     }
 }

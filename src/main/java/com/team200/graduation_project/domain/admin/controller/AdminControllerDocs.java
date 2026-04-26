@@ -2,6 +2,7 @@ package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -171,5 +172,15 @@ public interface AdminControllerDocs {
     ApiResponse<List<AdminOcrIngredientResponse>> getOcrIngredients(
             @RequestHeader("Authorization") String token,
             @RequestParam("ocrId") UUID ocrId
+    );
+
+    @Operation(summary = "OCR 정확도 수정", description = "OCR 정확도를 수동으로 수정합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "ocr 정확도를 수정할 수 없습니다.")
+    })
+    ApiResponse<String> updateOcrAccuracy(
+            @RequestHeader("Authorization") String token,
+            @RequestBody AdminOcrAccuracyRequest request
     );
 }

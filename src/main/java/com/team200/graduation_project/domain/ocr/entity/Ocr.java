@@ -33,4 +33,8 @@ public class Ocr {
 
     private Double accuracy;
 
+    public void updateAccuracy(Double accuracy) {
+        this.accuracy = accuracy;
+    }
+
 }
