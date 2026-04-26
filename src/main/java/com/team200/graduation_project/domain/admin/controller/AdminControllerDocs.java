@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.controller;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Admin", description = "관리자 관련 API")
 public interface AdminControllerDocs {
@@ -73,5 +75,15 @@ public interface AdminControllerDocs {
             @RequestHeader("Authorization") String token,
             @RequestParam("Date") LocalDate date,
             @RequestParam("type") String type
+    );
+
+    @Operation(summary = "신고 내역 상세 조회", description = "신고 내역 한 건을 상세하게 조회합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "신고 내역 한 건을 자세히 불러올 수 없습니다.")
+    })
+    ApiResponse<AdminReportDetailResponse> getReportDetail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("reportId") UUID reportId
     );
 }

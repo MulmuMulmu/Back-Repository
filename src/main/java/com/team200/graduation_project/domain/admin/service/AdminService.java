@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.service;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
@@ -29,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -155,6 +157,28 @@ public class AdminService {
                     .build();
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_REPORT_LIST_ERROR);
+        }
+    }
+
+    public AdminReportDetailResponse getReportDetail(UUID reportId) {
+        try {
+            Report report = reportRepository.findById(reportId)
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_REPORT_DETAIL_ERROR));
+
+            User reporter = report.getReporter();
+            User reported = report.getShare().getUser();
+
+            return AdminReportDetailResponse.builder()
+                    .reporterName(reporter.getNickName())
+                    .reportedName(reported.getNickName())
+                    .totalWarming(reported.getWarmingCount() != null ? reported.getWarmingCount() : 0L)
+                    .title(report.getTitle())
+                    .content(report.getContent())
+                    .build();
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_REPORT_DETAIL_ERROR);
         }
     }
 }

@@ -3,6 +3,7 @@ package com.team200.graduation_project.domain.admin.controller;
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
+import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportListResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayReportResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminTodayShareResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/admin")
@@ -77,5 +79,14 @@ public class AdminController implements AdminControllerDocs {
             @RequestParam("type") String type
     ) {
         return ApiResponse.onSuccess(adminService.getReportList(date, type));
+    }
+
+    @Override
+    @GetMapping("/report/one")
+    public ApiResponse<AdminReportDetailResponse> getReportDetail(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("reportId") UUID reportId
+    ) {
+        return ApiResponse.onSuccess(adminService.getReportDetail(reportId));
     }
 }
