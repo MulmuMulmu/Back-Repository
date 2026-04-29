@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/auth")
@@ -88,5 +91,14 @@ public class UserController implements UserControllerDocs {
             @RequestBody ChangeNicknameRequest request
     ) {
         return ApiResponse.onSuccess(userService.changeNickname(authorizationHeader, request));
+    }
+
+    @PutMapping(value = "/mypage/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Override
+    public ApiResponse<String> updateProfilePicture(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+            @RequestPart("image") MultipartFile image
+    ) {
+        return ApiResponse.onSuccess(userService.updateProfilePicture(authorizationHeader, image));
     }
 }

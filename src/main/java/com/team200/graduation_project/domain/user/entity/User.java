@@ -30,6 +30,9 @@ public class User {
     @Column(length = 20)
     private Boolean firstLogin;
 
+    @Column(length = 500)
+    private String imageUrl;
+
     private LocalDateTime deletedAt;
 
     @Enumerated(EnumType.STRING)
@@ -52,6 +55,10 @@ public class User {
 
     public void updateNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void softDelete() {

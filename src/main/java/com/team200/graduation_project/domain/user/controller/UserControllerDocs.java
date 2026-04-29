@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Auth", description = "회원 인증/계정 관련 API")
 public interface UserControllerDocs {
@@ -527,6 +529,58 @@ public interface UserControllerDocs {
                     )
             )
             ChangeNicknameRequest request
+    );
+
+    @Operation(
+            summary = "프로필 사진 변경",
+            description = "사용자의 프로필 사진을 변경합니다. Content-Type은 multipart/form-data로 요청해야 합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": "프로필사진이 변경되었습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "사진 변경 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "사진을 불러올 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<String> updateProfilePicture(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @Parameter(
+                    description = "프로필 사진 파일 (jpg/png)",
+                    required = true
+            )
+            @RequestPart("image") MultipartFile image
     );
 }
 

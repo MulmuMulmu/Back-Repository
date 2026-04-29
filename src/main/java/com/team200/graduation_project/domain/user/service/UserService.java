@@ -16,6 +16,12 @@ import com.team200.graduation_project.global.apiPayload.exception.GeneralExcepti
 import com.team200.graduation_project.global.jwt.JwtTokenPair;
 import com.team200.graduation_project.global.jwt.JwtTokenProvider;
 import com.team200.graduation_project.global.jwt.JwtTokenService;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +36,10 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenService jwtTokenService;
+    private final Storage storage;
+
+    @Value("${spring.cloud.gcp.storage.bucket}")
+    private String bucketName;
 
     public String checkIdDuplicated(String id) {
         if (!StringUtils.hasText(id)) {
@@ -56,6 +66,7 @@ public class UserService {
                     .userId(request.getId())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .nickName(request.getName())
+                    .imageUrl("https://storage.googleapis.com/mulmumulmu_picture/profilePicture/%E1%84%86%E1%85%AE%E1%86%AF%E1%84%86%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AF%E1%84%86%E1%85%AE%E1%84%83%E1%85%A2%E1%84%91%E1%85%AD%E1%84%89%E1%85%A1%E1%84%8C%E1%85%B5%E1%86%AB.png")
                     .firstLogin(true)
                     .warmingCount(0L)
                     .deletedAt(null)
@@ -84,6 +95,7 @@ public class UserService {
                         .userId(kakaoId)
                         .password(null)
                         .nickName("kakao_user")
+                        .imageUrl("https://storage.googleapis.com/mulmumulmu_picture/profilePicture/%E1%84%86%E1%85%AE%E1%86%AF%E1%84%86%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AF%E1%84%86%E1%85%AE%E1%84%83%E1%85%A2%E1%84%91%E1%85%AD%E1%84%89%E1%85%A1%E1%84%8C%E1%85%B5%E1%86%AB.png")
                         .firstLogin(true)
                         .warmingCount(0L)
                         .deletedAt(null)
@@ -212,6 +224,38 @@ public class UserService {
         } catch (Exception e) {
             throw new UserException(UserErrorCode.USER_PASSWORD_CHANGE_FAILED);
         }
+    }
+
+    @Transactional
+    public String updateProfilePicture(String authorizationHeader, MultipartFile image) {
+        if (image == null || image.isEmpty()) {
+            throw new UserException(UserErrorCode.USER_BAD_REQUEST);
+        }
+
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            String imageUrl = uploadProfilePictureToGcp(image, user.getNickName());
+            user.updateImageUrl(imageUrl);
+            return "프로필사진이 변경되었습니다.";
+        } catch (UserException | GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_PROFILE_PICTURE_UPLOAD_FAILED);
+        }
+    }
+
+    private String uploadProfilePictureToGcp(MultipartFile file, String nickName) throws IOException {
+        String uuid = UUID.randomUUID().toString();
+        String fileName = String.format("profilePicture/%s/%s_%s", nickName, uuid, file.getOriginalFilename());
+        String contentType = file.getContentType();
+
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, fileName)
+                .setContentType(contentType)
+                .build();
+
+        storage.create(blobInfo, file.getBytes());
+
+        return String.format("https://storage.googleapis.com/%s/%s", bucketName, fileName);
     }
 
     public String logout(String authorizationHeader) {
