@@ -1,6 +1,7 @@
 package com.team200.graduation_project.domain.user.controller;
 
 import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
+import com.team200.graduation_project.domain.user.dto.request.ChangeNicknameRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
@@ -448,6 +449,84 @@ public interface UserControllerDocs {
                     )
             )
             ChangePasswordRequest request
+    );
+
+    @Operation(
+            summary = "닉네임 변경",
+            description = "Authorization 헤더의 토큰으로 사용자 식별 후, oldnickName 검증이 통과하면 새 닉네임으로 변경합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": "닉네임이 성공적으로 변경되었습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "이전 닉네임 불일치",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON400",
+                                              "result": "이전 닉네임이 일치하지 않습니다."
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "닉네임 변경 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "닉네임을 변경할 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<String> changeNickname(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            schema = @Schema(implementation = ChangeNicknameRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "oldnickName": "물무11",
+                                              "newnickName": "물무22"
+                                            }
+                                            """
+                            )
+                    )
+            )
+            ChangeNicknameRequest request
     );
 }
 

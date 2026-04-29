@@ -50,6 +50,10 @@ public class User {
         this.password = password;
     }
 
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
         this.status = UserStatus.WITHDRAWN;

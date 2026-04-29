@@ -166,6 +166,30 @@ public class UserService {
     }
 
     @Transactional
+    public String changeNickname(String authorizationHeader, com.team200.graduation_project.domain.user.dto.request.ChangeNicknameRequest request) {
+        if (request == null
+                || !StringUtils.hasText(request.getOldnickName())
+                || !StringUtils.hasText(request.getNewnickName())) {
+            throw new UserException(UserErrorCode.USER_BAD_REQUEST);
+        }
+
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+
+            if (!request.getOldnickName().equals(user.getNickName())) {
+                throw new UserException(UserErrorCode.USER_NICKNAME_MISMATCH);
+            }
+
+            user.updateNickName(request.getNewnickName());
+            return "닉네임이 성공적으로 변경되었습니다.";
+        } catch (UserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_NICKNAME_CHANGE_FAILED);
+        }
+    }
+
+    @Transactional
     public String changePassword(String authorizationHeader, ChangePasswordRequest request) {
         if (request == null
                 || !StringUtils.hasText(request.getOldPassword())

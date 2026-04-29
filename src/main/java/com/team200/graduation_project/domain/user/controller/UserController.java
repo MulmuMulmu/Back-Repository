@@ -1,6 +1,7 @@
 package com.team200.graduation_project.domain.user.controller;
 
 import com.team200.graduation_project.domain.user.dto.request.ChangePasswordRequest;
+import com.team200.graduation_project.domain.user.dto.request.ChangeNicknameRequest;
 import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest;
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
@@ -78,5 +79,14 @@ public class UserController implements UserControllerDocs {
             @RequestBody ChangePasswordRequest request
     ) {
         return ApiResponse.onSuccess(userService.changePassword(authorizationHeader, request));
+    }
+
+    @PutMapping("/nickName")
+    @Override
+    public ApiResponse<String> changeNickname(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
+            @RequestBody ChangeNicknameRequest request
+    ) {
+        return ApiResponse.onSuccess(userService.changeNickname(authorizationHeader, request));
     }
 }

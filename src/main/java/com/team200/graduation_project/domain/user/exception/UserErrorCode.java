@@ -15,6 +15,8 @@ public enum UserErrorCode {
     USER_SIGNUP_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "회원가입을 완료할 수 없습니다."),
     USER_LOGIN_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "로그인 할 수 없습니다."),
     USER_PASSWORD_CHANGE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "비밀번호를 변경할 수 없습니다."),
+    USER_NICKNAME_MISMATCH(HttpStatus.BAD_REQUEST, "COMMON400", "이전 닉네임이 일치하지 않습니다."),
+    USER_NICKNAME_CHANGE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "닉네임을 변경할 수 없습니다."),
     USER_LOGOUT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "로그아웃 할 수 없습니다"),
     USER_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "회원탈퇴를 할 수 없습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "리소스를 찾을 수 없습니다.");
