@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminReportDetailResponse {
+    private UUID reportId;
     private String reporterName;
     private String reportedName;
     private Long totalWarming;

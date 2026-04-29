@@ -88,8 +88,44 @@ public interface AdminControllerDocs {
 
     @Operation(summary = "신고 내역 상세 조회", description = "신고 내역 한 건을 상세하게 조회합니다.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "신고 내역 한 건을 자세히 불러올 수 없습니다.")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200", 
+                    description = "OK",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": {
+                                                "reportId" : "exampleReportId",
+                                                "reporterName" : "물무",
+                                                "reportedName": "나연",
+                                                "totalWarming" : 1,
+                                                "title": "ExampleReportName",
+                                                "content" : "ExmapleContent"
+                                              }
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500", 
+                    description = "신고 내역 한 건을 자세히 불러올 수 없습니다.",
+                    content = @io.swagger.v3.oas.annotations.media.Content(
+                            mediaType = "application/json",
+                            examples = @io.swagger.v3.oas.annotations.media.ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code" : "COMMON500",
+                                              "result": "신고 내역 한 건을 자세히 불러올 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
     })
     ApiResponse<AdminReportDetailResponse> getReportDetail(
             @RequestParam("reportId") UUID reportId

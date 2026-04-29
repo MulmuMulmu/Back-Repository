@@ -194,6 +194,7 @@ public class AdminService {
             User reported = report.getShare().getUser();
 
             return AdminReportDetailResponse.builder()
+                    .reportId(report.getReportId())
                     .reporterName(reporter.getNickName())
                     .reportedName(reported.getNickName())
                     .totalWarming(reported.getWarmingCount() != null ? reported.getWarmingCount() : 0L)
