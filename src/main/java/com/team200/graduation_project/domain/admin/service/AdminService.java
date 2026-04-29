@@ -213,6 +213,10 @@ public class AdminService {
             Share share = shareRepository.findById(shareId)
                     .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_SHARE_MASKING_ERROR));
 
+            if (share.getIsView() != null && !share.getIsView()) {
+                throw new AdminException(AdminErrorCode.ADMIN_SHARE_ALREADY_MASKED);
+            }
+
             share.mask();
             shareRepository.save(share);
         } catch (AdminException e) {
