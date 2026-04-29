@@ -399,7 +399,6 @@ public class AdminService {
 
             List<UserIngredient> ingredients = userIngredientRepository.findAllByCreateTimeBetween(start, end);
 
-            // Group by date and then by ingredient name
             Map<LocalDate, Map<String, Long>> groupedData = ingredients.stream()
                     .collect(Collectors.groupingBy(
                             ui -> ui.getCreateTime().toLocalDate(),
@@ -427,7 +426,6 @@ public class AdminService {
                         .build());
             });
 
-            // Sort by date
             Collections.sort(results, (a, b) -> a.getDate().compareTo(b.getDate()));
 
             return results;

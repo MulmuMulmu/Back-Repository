@@ -119,7 +119,6 @@ public class UserIngredientService {
             java.time.LocalDate today = java.time.LocalDate.now();
             java.time.LocalDate endDate = today.plusDays(withinDays);
 
-            // "소비기한 N일 내" = 오늘 포함하여 +N일 이하인 항목 계산 (이미 지난 항목도 세려면 LessThanEqual, 여기서는 오늘부터 +N일 이내로만 계산)
             return userIngredientRepository.countByUserAndExpirationDateBetween(user, today, endDate);
         } catch (GeneralException e) {
             throw e;

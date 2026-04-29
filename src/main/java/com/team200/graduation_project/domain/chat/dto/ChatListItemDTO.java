@@ -13,5 +13,5 @@ public class ChatListItemDTO {
     private String senderNicName;
     private String lastMessage;
     private String sendTime;
-    private String type; // giveaway (give) or take-away (take)
+    private String type;
 }

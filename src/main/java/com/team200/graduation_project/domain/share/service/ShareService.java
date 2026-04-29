@@ -67,7 +67,6 @@ public class ShareService {
 
     @Transactional
     public LocationResponse addLocation(String authorizationHeader, LocationRequest request) {
-        // 1. User identification from token
         String token = extractAccessToken(authorizationHeader);
         if (!jwtTokenProvider.validateToken(token)) {
             throw new GeneralException(GeneralErrorCode.UNAUTHORIZED);
@@ -76,7 +75,6 @@ public class ShareService {
         User user = userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
 
-        // 2. Fetch address from Kakao API
         KakaoAddressResponse response = kakaoLocalClient.coord2address(request.getLongitude(), request.getLatitude());
 
         if (response == null || response.getDocuments() == null || response.getDocuments().isEmpty()) {
@@ -100,7 +98,6 @@ public class ShareService {
             throw new GeneralException(GeneralErrorCode.LOCATION_FETCH_FAILED);
         }
 
-        // 3. Save or Update Location entity
         Location location = locationRepository.findByUser(user).orElse(null);
         if (location == null) {
             location = Location.builder()
@@ -123,10 +120,8 @@ public class ShareService {
 
     @Transactional
     public void publishSharePosting(String authorizationHeader, ShareRequestDTO request) {
-        // 1. User identification from token
         User user = findUserFromHeader(authorizationHeader);
 
-        // 2. Fetch and validate UserIngredient by name
         UserIngredient userIngredient = null;
         if (StringUtils.hasText(request.getIngredientName())) {
             List<UserIngredient> matchingIngredients = userIngredientRepository.findByUserAndIngredient_IngredientName(user, request.getIngredientName());
@@ -140,16 +135,13 @@ public class ShareService {
                 throw new ShareException(ShareErrorCode.USER_INGREDIENT_NOT_FOUND);
             }
         } else {
-            // If the user didn't provide an ingredient name, throw an error as per requirement
             throw new ShareException(ShareErrorCode.SHARE_BAD_REQUEST);
         }
 
         try {
-            // 3. Map to Share entity and save
             Share share = shareConverter.toShare(request, user, userIngredient);
             shareRepository.save(share);
 
-            // 4. Upload image and save SharePicture entity
             if (request.getImage() != null && !request.getImage().isEmpty()) {
                 String url = uploadToGcp(request.getImage(), user.getUserId());
                 SharePicture picture = shareConverter.toSharePicture(url, share);
@@ -189,7 +181,6 @@ public class ShareService {
 
     @Transactional(readOnly = true)
     public ShareListResponseDTO getShareList(String authorizationHeader) {
-        // 1. Identify current user and their location
         User currentUser = findUserFromHeader(authorizationHeader);
         Location currentUserLocation = locationRepository.findByUser(currentUser)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.LOCATION_NOT_FOUND));
@@ -197,16 +188,12 @@ public class ShareService {
         double myLat = currentUserLocation.getLatitude();
         double myLon = currentUserLocation.getLongitude();
 
-        // 2. Fetch all postings (with user fetched)
         List<Share> allShares = shareRepository.findAllWithUser();
 
-        // 3. Filter by distance (10km) and calculate distance
         List<ShareWithDistance> filteredShares = allShares.stream()
                 .map(share -> {
-                    // 비노출 게시글 제외
                     if (java.util.Objects.equals(share.getIsView(), false)) return null;
 
-                    // 본인의 글은 제외
                     if (share.getUser().getUserId().equals(currentUser.getUserId())) return null;
 
                     Location posterLocation = locationRepository.findByUser(share.getUser()).orElse(null);
@@ -216,12 +203,11 @@ public class ShareService {
                     return new ShareWithDistance(share, distance, posterLocation.getDisplayAddress());
                 })
                 .filter(java.util.Objects::nonNull)
-                .sorted((a, b) -> b.share.getCreateTime().compareTo(a.share.getCreateTime())) // 최신순
+                .sorted((a, b) -> b.share.getCreateTime().compareTo(a.share.getCreateTime()))
                 .toList();
 
         long totalCount = filteredShares.size();
 
-        // 4. Map to DTOs using directly joined SharePicture
         List<ShareListResponseDTO.ShareItemDTO> itemDTOs = filteredShares.stream()
                 .map(swd -> {
                     String firstImageUrl = swd.share.getSharePicture() != null 
@@ -280,7 +266,6 @@ public class ShareService {
             throw new GeneralException(GeneralErrorCode.UNAUTHORIZED);
         }
 
-        // Fetch and validate UserIngredient if name provided
         UserIngredient userIngredient = share.getUserIngredient();
         if (StringUtils.hasText(request.getIngredientName())) {
             List<UserIngredient> matchingIngredients = userIngredientRepository.findByUserAndIngredient_IngredientName(user, request.getIngredientName());
@@ -299,7 +284,6 @@ public class ShareService {
             share.update(request.getTitle(), request.getContent(), request.getCategory(), request.getExpirationDate(), userIngredient);
             shareRepository.save(share);
 
-            // Update image if a new file is uploaded
             if (request.getImage() != null && !request.getImage().isEmpty()) {
                 String imageUrl = uploadToGcp(request.getImage(), user.getUserId());
                 if (share.getSharePicture() != null) {
@@ -372,11 +356,9 @@ public class ShareService {
 
         try {
             if ("전체".equals(request.getType())) {
-                // Transfer ownership
                 giverIngredient.updateUser(taker);
                 userIngredientRepository.save(giverIngredient);
             } else if ("일부".equals(request.getType())) {
-                // Clone ingredient for taker
                 UserIngredient takerIngredient = UserIngredient.builder()
                         .user(taker)
                         .ingredient(giverIngredient.getIngredient())
@@ -389,7 +371,6 @@ public class ShareService {
                 throw new ShareException(ShareErrorCode.SHARE_BAD_REQUEST);
             }
 
-            // Update share status
             share.setStatus(ShareStatus.COMPLETED);
             shareRepository.save(share);
         } catch (ShareException e) {
@@ -400,14 +381,14 @@ public class ShareService {
     }
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        double R = 6371; // Earth radius in km
+        double R = 6371;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return Math.round(R * c * 10.0) / 10.0; // 1 decimal place
+        return Math.round(R * c * 10.0) / 10.0;
     }
 
     private static class ShareWithDistance {

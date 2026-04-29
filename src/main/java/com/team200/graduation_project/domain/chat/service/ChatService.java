@@ -42,33 +42,27 @@ public class ChatService {
 
     @Transactional
     public ChatStartResponseDTO startChat(String authorizationHeader, ChatStartRequestDTO request) {
-        // 1. Identify current user (sender)
         User sender = findUserFromHeader(authorizationHeader);
 
-        // 2. Fetch share post
         Share share = shareRepository.findById(request.getPostId())
                 .orElseThrow(() -> new ShareException(ShareErrorCode.SHARE_POSTING_NOT_FOUND));
 
-        // 3. Prevent self-chat
         if (share.getUser().getUserId().equals(sender.getUserId())) {
             throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
         }
 
-        // 4. Check if chat room already exists
         Optional<ChatRoom> existingRoom = chatRoomRepository.findByShareAndSender(share, sender);
         if (existingRoom.isPresent()) {
             return chatConverter.toChatStartResponseDTO(existingRoom.get());
         }
 
         try {
-            // 5. Create new ChatRoom
             ChatRoom chatRoom = ChatRoom.builder()
                     .share(share)
                     .sender(sender)
                     .build();
             chatRoom = chatRoomRepository.save(chatRoom);
 
-            // 6. Create ChatRoomParticipant for the receiver (post owner)
             ChatRoomParticipant participant = ChatRoomParticipant.builder()
                     .chatRoomId(chatRoom.getChatRoomId())
                     .receiverId(share.getUser().getUserId())
@@ -83,33 +77,28 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatListItemDTO> getChatList(String authorizationHeader, String type) {
-        // 1. Identify current user
         User user = findUserFromHeader(authorizationHeader);
 
         List<ChatListItemDTO> resultList = new ArrayList<>();
 
-        // 2. Fetch ChatRooms based on type
-        // Take: I am the initiator (sender)
         if ("all".equalsIgnoreCase(type) || "take".equalsIgnoreCase(type)) {
             List<ChatRoom> takeRooms = chatRoomRepository.findAllBySender(user);
             takeRooms.forEach(room -> {
                 ChatMessage lastMsg = chatMessageRepository.findFirstByChatRoomOrderByCreateTimeDesc(room).orElse(null);
-                User opponent = room.getShare().getUser(); // Post owner is the opponent
+                User opponent = room.getShare().getUser();
                 resultList.add(chatConverter.toChatListItemDTO(room, lastMsg, "take", opponent));
             });
         }
 
-        // Give: I am the post owner (share.user)
         if ("all".equalsIgnoreCase(type) || "give".equalsIgnoreCase(type)) {
             List<ChatRoom> giveRooms = chatRoomRepository.findAllByShare_User(user);
             giveRooms.forEach(room -> {
                 ChatMessage lastMsg = chatMessageRepository.findFirstByChatRoomOrderByCreateTimeDesc(room).orElse(null);
-                User opponent = room.getSender(); // Initiator is the opponent
+                User opponent = room.getSender();
                 resultList.add(chatConverter.toChatListItemDTO(room, lastMsg, "give", opponent));
             });
         }
 
-        // 3. Sort by last message time (latest first)
         resultList.sort((a, b) -> b.getSendTime().compareTo(a.getSendTime()));
 
         return resultList;
@@ -117,15 +106,12 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<ChatReceptionResponseDTO.MessageItemDTO> getChatMessages(String authorizationHeader, UUID chatRoomId) {
-        // 1. Identify current user
         User user = findUserFromHeader(authorizationHeader);
         String userId = user.getUserId();
 
-        // 2. Fetch chat room
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND));
 
-        // 3. Verify participant status
         boolean isInitiator = chatRoom.getSender().getUserId().equals(userId);
         boolean isReceiver = chatRoomParticipantRepository.existsById(new ChatRoomParticipantId(chatRoomId, userId));
 
@@ -133,7 +119,6 @@ public class ChatService {
             throw new GeneralException(GeneralErrorCode.FORBIDDEN);
         }
 
-        // 4. Fetch all messages and convert
         List<ChatMessage> messages = chatMessageRepository.findAllByChatRoom_ChatRoomIdOrderByCreateTimeAsc(chatRoomId);
 
         return messages.stream()
@@ -143,15 +128,12 @@ public class ChatService {
 
     @Transactional
     public void sendMessage(String authorizationHeader, ChatMessageRequestDTO request) {
-        // 1. Identify current user (sender)
         User sender = findUserFromHeader(authorizationHeader);
         String senderId = sender.getUserId();
 
-        // 2. Fetch chat room
         ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND));
 
-        // 3. Verify participant status
         boolean isInitiator = chatRoom.getSender().getUserId().equals(senderId);
         boolean isReceiver = chatRoomParticipantRepository.existsById(new ChatRoomParticipantId(request.getChatRoomId(), senderId));
 
@@ -160,7 +142,6 @@ public class ChatService {
         }
 
         try {
-            // 4. Create and save message
             ChatMessage message = ChatMessage.builder()
                     .user(sender)
                     .chatRoom(chatRoom)
@@ -175,16 +156,13 @@ public class ChatService {
 
     @Transactional
     public void markAsRead(String authorizationHeader, ChatReadRequestDTO request) {
-        // 1. Identify current user
         User user = findUserFromHeader(authorizationHeader);
         String userId = user.getUserId();
         UUID chatRoomId = request.getChatRoomId();
 
-        // 2. Fetch chat room
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND));
 
-        // 3. Verify participant status
         boolean isInitiator = chatRoom.getSender().getUserId().equals(userId);
         boolean isReceiver = chatRoomParticipantRepository.existsById(new ChatRoomParticipantId(chatRoomId, userId));
 
@@ -193,7 +171,6 @@ public class ChatService {
         }
 
         try {
-            // 4. Mark messages as read
             chatMessageRepository.markMessagesAsRead(chatRoomId, userId);
         } catch (Exception e) {
             throw new GeneralException(GeneralErrorCode.INTERNAL_SERVER_ERROR);
