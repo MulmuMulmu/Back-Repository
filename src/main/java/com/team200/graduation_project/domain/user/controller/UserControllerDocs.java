@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
+import com.team200.graduation_project.domain.user.dto.response.UserMypageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -581,6 +582,56 @@ public interface UserControllerDocs {
                     required = true
             )
             @RequestPart("image") MultipartFile image
+    );
+
+    @Operation(
+            summary = "마이페이지 조회",
+            description = "사용자의 닉네임과 프로필 사진 URL을 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": {
+                                                "nickName": "mulmu",
+                                                "profileImageUrl": "https://~~~"
+                                              }
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "조회 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON500",
+                                              "result": "사용자 정보를 불러올 수 없습니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<UserMypageResponse> getMypage(
+            @Parameter(
+                    description = "JWT access token (Bearer prefix 포함 가능)",
+                    required = false,
+                    hidden = true,
+                    example = "Bearer exampleToken"
+            )
+            @RequestHeader("Authorization") String authorizationHeader
     );
 }
 

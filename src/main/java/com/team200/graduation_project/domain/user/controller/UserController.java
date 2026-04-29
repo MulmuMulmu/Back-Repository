@@ -6,6 +6,7 @@ import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
+import com.team200.graduation_project.domain.user.dto.response.UserMypageResponse;
 import com.team200.graduation_project.domain.user.service.UserService;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -100,5 +101,13 @@ public class UserController implements UserControllerDocs {
             @RequestPart("image") MultipartFile image
     ) {
         return ApiResponse.onSuccess(userService.updateProfilePicture(authorizationHeader, image));
+    }
+
+    @GetMapping("/mypage")
+    @Override
+    public ApiResponse<UserMypageResponse> getMypage(
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader
+    ) {
+        return ApiResponse.onSuccess(userService.getMypage(authorizationHeader));
     }
 }

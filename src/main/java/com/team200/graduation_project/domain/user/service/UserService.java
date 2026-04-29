@@ -5,6 +5,7 @@ import com.team200.graduation_project.domain.user.dto.request.KakaoSignupRequest
 import com.team200.graduation_project.domain.user.dto.request.LoginRequest;
 import com.team200.graduation_project.domain.user.dto.request.UserSignupRequest;
 import com.team200.graduation_project.domain.user.dto.response.LoginResponse;
+import com.team200.graduation_project.domain.user.dto.response.UserMypageResponse;
 import com.team200.graduation_project.domain.user.entity.User;
 import com.team200.graduation_project.domain.user.entity.Role;
 import com.team200.graduation_project.domain.user.entity.UserStatus;
@@ -276,6 +277,21 @@ public class UserService {
             throw e;
         } catch (Exception e) {
             throw new UserException(UserErrorCode.USER_DELETION_FAILED);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public UserMypageResponse getMypage(String authorizationHeader) {
+        try {
+            User user = findUserFromAuthorizationHeader(authorizationHeader);
+            return UserMypageResponse.builder()
+                    .nickName(user.getNickName())
+                    .profileImageUrl(user.getImageUrl())
+                    .build();
+        } catch (GeneralException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UserException(UserErrorCode.USER_MYPAGE_FAILED);
         }
     }
 
