@@ -98,9 +98,9 @@ public interface AdminControllerDocs {
                                             {
                                               "success": true,
                                               "result": {
-                                                "reportId" : "exampleReportId",
                                                 "reporterName" : "물무",
                                                 "reportedName": "나연",
+                                                "reportedNameId": "exampleUserId",
                                                 "totalWarming" : 1,
                                                 "title": "ExampleReportName",
                                                 "content" : "ExmapleContent"
