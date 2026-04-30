@@ -18,6 +18,7 @@ import com.team200.graduation_project.global.jwt.JwtTokenPair;
 import com.team200.graduation_project.global.jwt.JwtTokenProvider;
 import com.team200.graduation_project.global.jwt.JwtTokenService;
 import com.google.cloud.storage.BlobInfo;
+import jakarta.persistence.EntityManager;
 import com.google.cloud.storage.Storage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenService jwtTokenService;
     private final Storage storage;
+    private final EntityManager entityManager;
 
     @Value("${spring.cloud.gcp.storage.bucket}")
     private String bucketName;
@@ -272,10 +274,56 @@ public class UserService {
         try {
             User user = findUserFromAuthorizationHeader(authorizationHeader);
             user.softDelete();
+
+            String oldId = user.getUserId();
+            String newId = "del_" + UUID.randomUUID().toString().substring(0, 8);
+
+            entityManager.flush();
+            entityManager.clear();
+
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+
+            entityManager.createQuery("UPDATE User u SET u.userId = :newId WHERE u.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE UserIngredient ui SET ui.user.userId = :newId WHERE ui.user.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE Share s SET s.user.userId = :newId WHERE s.user.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE ChatMessage cm SET cm.user.userId = :newId WHERE cm.user.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE ChatRoom cr SET cr.sender.userId = :newId WHERE cr.sender.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE ChatRoomParticipant crp SET crp.receiver.userId = :newId WHERE crp.receiver.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE Report r SET r.reporter.userId = :newId WHERE r.reporter.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            entityManager.createQuery("UPDATE Ocr o SET o.user.userId = :newId WHERE o.user.userId = :oldId")
+                    .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+
+            try {
+                entityManager.createQuery("UPDATE Location l SET l.user.userId = :newId WHERE l.user.userId = :oldId")
+                        .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+            } catch (Exception e) {}
+
+            try {
+                entityManager.createQuery("UPDATE UserPreference up SET up.user.userId = :newId WHERE up.user.userId = :oldId")
+                        .setParameter("newId", newId).setParameter("oldId", oldId).executeUpdate();
+            } catch (Exception e) {}
+
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+
             return "회원탈퇴가 완료되었습니다.";
         } catch (UserException | GeneralException e) {
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UserException(UserErrorCode.USER_DELETION_FAILED);
         }
     }
