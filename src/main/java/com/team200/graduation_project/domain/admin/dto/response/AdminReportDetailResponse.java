@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -16,4 +19,5 @@ public class AdminReportDetailResponse {
     private Long totalWarming;
     private String title;
     private String content;
+    private UUID reportId;
 }

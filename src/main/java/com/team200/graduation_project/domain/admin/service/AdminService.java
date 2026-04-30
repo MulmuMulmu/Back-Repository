@@ -200,6 +200,7 @@ public class AdminService {
                     .totalWarming(reported.getWarmingCount() != null ? reported.getWarmingCount() : 0L)
                     .title(report.getTitle())
                     .content(report.getContent())
+                    .reportId(report.getReportId())
                     .build();
         } catch (AdminException e) {
             throw e;
