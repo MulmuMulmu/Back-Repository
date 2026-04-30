@@ -30,6 +30,8 @@ public enum AdminErrorCode {
             "COMMON400", "이미 숨김처리된 게시글입니다."),
     ADMIN_USER_ACTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "사용자 상태를 변경할 수 없습니다."),
+    ADMIN_USER_ALREADY_BLOCKED(HttpStatus.BAD_REQUEST,
+            "COMMON400", "영구정지된 사용자입니다."),
     ADMIN_SHARE_DETAIL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,
             "COMMON500", "나눔 정보를 불러올 수 없습니다."),
     ADMIN_USER_LIST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,

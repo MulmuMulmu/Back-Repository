@@ -237,6 +237,9 @@ public class AdminService {
                 user.block();
                 resultMessage = "사용자가 영구 정지 되었습니다.";
             } else if ("사용자 경고".equals(request.getStatus())) {
+                if (user.getStatus() == UserStatus.BLOCKED) {
+                    throw new AdminException(AdminErrorCode.ADMIN_USER_ALREADY_BLOCKED);
+                }
                 user.addWarning();
                 resultMessage = "사용자에게 경고 하나를 부여했습니다.";
             } else {
