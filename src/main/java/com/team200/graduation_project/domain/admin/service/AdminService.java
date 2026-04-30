@@ -243,6 +243,14 @@ public class AdminService {
             }
 
             userRepository.save(user);
+
+            if (request.getReportId() != null) {
+                Report report = reportRepository.findById(request.getReportId())
+                        .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_REPORT_DETAIL_ERROR));
+                report.complete();
+                reportRepository.save(report);
+            }
+
             return resultMessage;
         } catch (AdminException e) {
             throw e;
