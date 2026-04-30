@@ -193,11 +193,15 @@ public class AdminService {
             User reporter = report.getReporter();
             User reported = report.getShare().getUser();
 
+            String warmingStatus = (reported.getStatus() == UserStatus.BLOCKED)
+                    ? "영구정지"
+                    : String.valueOf(reported.getWarmingCount() != null ? reported.getWarmingCount() : 0L);
+
             return AdminReportDetailResponse.builder()
                     .reporterName(reporter.getNickName())
                     .reportedName(reported.getNickName())
                     .reportedNameId(reported.getUserId())
-                    .totalWarming(reported.getWarmingCount() != null ? reported.getWarmingCount() : 0L)
+                    .totalWarming(warmingStatus)
                     .title(report.getTitle())
                     .content(report.getContent())
                     .reportId(report.getReportId())
@@ -234,6 +238,9 @@ public class AdminService {
 
             String resultMessage;
             if ("영구정지".equals(request.getStatus())) {
+                if (user.getStatus() == UserStatus.BLOCKED) {
+                    throw new AdminException(AdminErrorCode.ADMIN_USER_BLOCK_ALREADY_DONE);
+                }
                 user.block();
                 resultMessage = "사용자가 영구 정지 되었습니다.";
             } else if ("사용자 경고".equals(request.getStatus())) {

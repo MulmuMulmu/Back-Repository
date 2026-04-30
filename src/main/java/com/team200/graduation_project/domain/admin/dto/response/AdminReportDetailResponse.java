@@ -16,7 +16,7 @@ public class AdminReportDetailResponse {
     private String reporterName;
     private String reportedName;
     private String reportedNameId;
-    private Long totalWarming;
+    private String totalWarming;
     private String title;
     private String content;
     private UUID reportId;
