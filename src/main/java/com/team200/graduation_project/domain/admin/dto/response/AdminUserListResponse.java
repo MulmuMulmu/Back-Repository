@@ -13,6 +13,6 @@ public class AdminUserListResponse {
     private Integer number;
     private String userId;
     private String nickName;
-    private Long totalWarming;
+    private String totalWarming;
     private Long totalShare;
 }

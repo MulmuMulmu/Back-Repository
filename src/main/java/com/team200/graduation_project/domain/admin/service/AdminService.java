@@ -301,12 +301,16 @@ public class AdminService {
             for (int i = 0; i < users.size(); i++) {
                 User user = users.get(i);
                 Long totalShare = shareRepository.countByUserAndDeletedAtIsNull(user);
+                
+                String warmingStatus = (user.getStatus() == UserStatus.BLOCKED) 
+                        ? "영구정지" 
+                        : String.valueOf(user.getWarmingCount() != null ? user.getWarmingCount() : 0L);
 
                 result.add(AdminUserListResponse.builder()
                         .number(i + 1)
                         .userId(user.getUserId())
                         .nickName(user.getNickName())
-                        .totalWarming(user.getWarmingCount() != null ? user.getWarmingCount() : 0L)
+                        .totalWarming(warmingStatus)
                         .totalShare(totalShare)
                         .build());
             }
