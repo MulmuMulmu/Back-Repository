@@ -25,6 +25,8 @@ public class KakaoAddressResponse {
         private Address address;
         @JsonProperty("road_address")
         private RoadAddress roadAddress;
+        private String x;
+        private String y;
     }
 
     @Getter

@@ -1,5 +1,6 @@
 package com.team200.graduation_project.domain.share.controller;
 
+import com.team200.graduation_project.domain.share.dto.request.KakaoLocationRequest;
 import com.team200.graduation_project.domain.share.dto.request.LocationRequest;
 import com.team200.graduation_project.domain.share.dto.request.ReportRequestDTO;
 import com.team200.graduation_project.domain.share.dto.request.ShareRequestDTO;
@@ -32,6 +33,15 @@ public class ShareController implements ShareControllerDocs {
             @RequestBody LocationRequest request
     ) {
         return ApiResponse.onSuccess(shareService.addLocation(authorizationHeader, request));
+    }
+
+    @Override
+    @PostMapping("/adding/location/kakao")
+    public ApiResponse<LocationResponse> addLocationByKakao(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody KakaoLocationRequest request
+    ) {
+        return ApiResponse.onSuccess(shareService.addLocationByKakao(authorizationHeader, request));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.team200.graduation_project.domain.share.controller;
 
+import com.team200.graduation_project.domain.share.dto.request.KakaoLocationRequest;
 import com.team200.graduation_project.domain.share.dto.request.LocationRequest;
 import com.team200.graduation_project.domain.share.dto.request.ReportRequestDTO;
 import com.team200.graduation_project.domain.share.dto.request.ShareRequestDTO;
@@ -51,6 +52,33 @@ public interface ShareControllerDocs {
                       "longitude": 127.129712
                     }
                     """))) LocationRequest request);
+
+    @Operation(summary = "위치 등록 (카카오 주소 검색)", description = "오직 카카오 우편번호 서비스의 지번 주소만 입력받아 위도와 경도를 추출하고 위치 정보를 저장합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "성공", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": true,
+                      "result": {
+                        "full_address": "경기 성남시 분당구 백현동 532",
+                        "display_address": "백현동"
+                      }
+                    }
+                    """))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "위치 검색 실패", content = @Content(mediaType = "application/json", examples = @ExampleObject(value = """
+                    {
+                      "success": false,
+                      "code": "COMMON500",
+                      "result": "위치를 검색할 수 없습니다."
+                    }
+                    """)))
+    })
+    ApiResponse<LocationResponse> addLocationByKakao(
+            @Parameter(hidden = true) @RequestHeader("Authorization") String authorizationHeader,
+            @RequestBody(required = true, content = @Content(schema = @Schema(implementation = KakaoLocationRequest.class), examples = @ExampleObject(value = """
+                    {
+                      "address": "경기 성남시 분당구 백현동 532"
+                    }
+                    """))) KakaoLocationRequest request);
 
     @Operation(summary = "나눔 게시글 등록", description = "사진 1장과 함께 사용자가 보유한 식재료의 이름을 입력하여 나눔 게시글을 등록합니다.")
     @ApiResponses({

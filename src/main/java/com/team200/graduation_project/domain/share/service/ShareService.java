@@ -119,6 +119,62 @@ public class ShareService {
     }
 
     @Transactional
+    public LocationResponse addLocationByKakao(String authorizationHeader, com.team200.graduation_project.domain.share.dto.request.KakaoLocationRequest request) {
+        String token = extractAccessToken(authorizationHeader);
+        if (!jwtTokenProvider.validateToken(token)) {
+            throw new GeneralException(GeneralErrorCode.UNAUTHORIZED);
+        }
+        String userId = jwtTokenProvider.getSubject(token);
+        User user = userRepository.findByUserIdIsAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.UNAUTHORIZED));
+
+        KakaoAddressResponse response = kakaoLocalClient.address2coord(request.getAddress());
+
+        if (response == null || response.getDocuments() == null || response.getDocuments().isEmpty()) {
+            throw new GeneralException(GeneralErrorCode.LOCATION_FETCH_FAILED);
+        }
+
+        KakaoAddressResponse.Document document = response.getDocuments().get(0);
+
+        Double latitude = Double.valueOf(document.getY());
+        Double longitude = Double.valueOf(document.getX());
+
+        String fullAddress = "";
+        String displayAddress = "";
+
+        if (document.getAddress() != null) {
+            fullAddress = document.getAddress().getAddressName();
+            displayAddress = document.getAddress().getRegion3DepthName();
+        } else if (document.getRoadAddress() != null) {
+            fullAddress = document.getRoadAddress().getAddressName();
+            displayAddress = document.getRoadAddress().getRegion3DepthName();
+        }
+
+        if (fullAddress.isEmpty()) {
+            throw new GeneralException(GeneralErrorCode.LOCATION_FETCH_FAILED);
+        }
+
+        Location location = locationRepository.findByUser(user).orElse(null);
+        if (location == null) {
+            location = Location.builder()
+                    .user(user)
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .fullAddress(fullAddress)
+                    .displayAddress(displayAddress)
+                    .build();
+        } else {
+            location.update(latitude, longitude, fullAddress, displayAddress);
+        }
+        locationRepository.save(location);
+
+        return LocationResponse.builder()
+                .full_address(fullAddress)
+                .display_address(displayAddress)
+                .build();
+    }
+
+    @Transactional
     public void publishSharePosting(String authorizationHeader, ShareRequestDTO request) {
         User user = findUserFromHeader(authorizationHeader);
 
