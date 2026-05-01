@@ -35,6 +35,8 @@ public class UserIngredient {
     @JoinColumn(name = "ingredientId")
     private Ingredient ingredient;
 
+    private LocalDate purchaseDate;
+
     private LocalDate expirationDate;
 
     @Enumerated(EnumType.STRING)

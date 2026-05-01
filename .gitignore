@@ -41,3 +41,6 @@ out/
 
 /keys/
 *.json
+!src/main/resources/seed/
+!src/main/resources/seed/canonical_ingredients.json
+!src/main/resources/seed/canonical_ingredient_aliases.json

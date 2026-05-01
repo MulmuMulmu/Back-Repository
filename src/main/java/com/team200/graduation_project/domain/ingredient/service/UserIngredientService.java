@@ -52,6 +52,7 @@ public class UserIngredientService {
                 return UserIngredient.builder()
                         .user(user)
                         .ingredient(ingredient)
+                        .purchaseDate(request.getPurchaseDate())
                         .expirationDate(request.getExpirationDate())
                         .status(UserIngredientStatus.NORMAL)
                         .source(IngredientSource.MANUAL)
@@ -101,6 +102,7 @@ public class UserIngredientService {
                         .sortRank(i + 1)
                         .ingredient(item.getIngredient().getIngredientName())
                         .dDay(dDay)
+                        .purchaseDate(item.getPurchaseDate())
                         .expirationDate(item.getExpirationDate())
                         .build());
             }

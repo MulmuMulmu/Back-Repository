@@ -2,20 +2,22 @@ package com.team200.graduation_project.domain.recipe.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "`RecipeStep`")
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class RecipeStep {
 
     @Id
-    @UuidGenerator
     @Column(columnDefinition = "BINARY(16)")
     private UUID recipeStepId;
 

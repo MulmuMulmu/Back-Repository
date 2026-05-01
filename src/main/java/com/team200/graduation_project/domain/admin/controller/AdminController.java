@@ -1,8 +1,10 @@
 package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientAliasRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrIngredientUpdateRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -166,6 +168,20 @@ public class AdminController implements AdminControllerDocs {
             @RequestBody AdminOcrAccuracyRequest request
     ) {
         return ApiResponse.onSuccess(adminService.updateOcrAccuracy(request));
+    }
+
+    @Override
+    @PostMapping("/ingredient/alias")
+    public ApiResponse<String> addIngredientAlias(@RequestBody AdminIngredientAliasRequest request) {
+        return ApiResponse.onSuccess(adminService.addIngredientAlias(request));
+    }
+
+    @Override
+    @PatchMapping("/ocr/ingredients")
+    public ApiResponse<String> updateOcrIngredients(
+            @RequestBody AdminOcrIngredientUpdateRequest request
+    ) {
+        return ApiResponse.onSuccess(adminService.updateOcrIngredients(request));
     }
 
     @Override

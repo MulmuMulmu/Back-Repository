@@ -66,6 +66,50 @@ public interface IngredientControllerDocs {
     );
 
     @Operation(
+            summary = "카테고리별 표준 식재료 조회",
+            description = "수동 입력에서 사용자가 검색으로 찾기 어려운 경우 카테고리별 표준 식재료명을 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": true,
+                                              "result": {
+                                                "ingredientNames": ["계란", "돼지고기", "소고기"]
+                                              }
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "success": false,
+                                              "code": "COMMON400",
+                                              "result": "잘못된 요청입니다."
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    com.team200.graduation_project.global.apiPayload.ApiResponse<?> listIngredientsByCategory(
+            @Parameter(description = "카테고리명", required = true, example = "정육/계란")
+            @RequestParam String category
+    );
+
+    @Operation(
             summary = "식재료 수동 등록",
             description = "사용자가 구매하거나 보유한 식재료를 수동으로 등록합니다."
     )

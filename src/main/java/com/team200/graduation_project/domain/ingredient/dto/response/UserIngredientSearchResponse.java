@@ -13,5 +13,6 @@ public class UserIngredientSearchResponse {
     private Integer sortRank;
     private String ingredient;
     private Long dDay;
+    private LocalDate purchaseDate;
     private LocalDate expirationDate;
 }

@@ -1,8 +1,10 @@
 package com.team200.graduation_project.domain.admin.controller;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientAliasRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrIngredientUpdateRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -39,6 +41,13 @@ public interface AdminControllerDocs {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     ApiResponse<String> addIngredients(@RequestBody List<AdminIngredientRequest> requests);
+
+    @Operation(summary = "식재료 별칭 추가", description = "관리자가 OCR/사용자 입력 상품명을 표준 식재료명에 연결합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    ApiResponse<String> addIngredientAlias(@RequestBody AdminIngredientAliasRequest request);
 
     @Operation(summary = "관리자 로그인", description = "관리자 계정으로 로그인합니다.", security = {})
     @ApiResponses({
@@ -209,6 +218,15 @@ public interface AdminControllerDocs {
     })
     ApiResponse<String> updateOcrAccuracy(
             @RequestBody AdminOcrAccuracyRequest request
+    );
+
+    @Operation(summary = "OCR 스캔 식재료 품목 수정", description = "관리자가 OCR 품목명, 수량, 정확도를 검수 후 수정합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "OK"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "OCR 품목을 수정할 수 없습니다.")
+    })
+    ApiResponse<String> updateOcrIngredients(
+            @RequestBody AdminOcrIngredientUpdateRequest request
     );
 
     @Operation(summary = "식재료 수집 데이터 통계 조회", description = "특정 기간 동안의 식재료 수집 데이터 통계를 조회합니다.")

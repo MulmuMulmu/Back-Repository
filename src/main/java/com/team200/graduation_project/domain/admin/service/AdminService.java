@@ -1,8 +1,10 @@
 package com.team200.graduation_project.domain.admin.service;
 
 import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminIngredientAliasRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminLoginRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminOcrAccuracyRequest;
+import com.team200.graduation_project.domain.admin.dto.request.AdminOcrIngredientUpdateRequest;
 import com.team200.graduation_project.domain.admin.dto.request.AdminUserActionRequest;
 import com.team200.graduation_project.domain.admin.dto.response.AdminLoginResponse;
 import com.team200.graduation_project.domain.admin.dto.response.AdminReportDetailResponse;
@@ -20,10 +22,13 @@ import com.team200.graduation_project.domain.admin.dto.response.AdminUserDashboa
 import com.team200.graduation_project.domain.admin.exception.AdminErrorCode;
 import com.team200.graduation_project.domain.admin.exception.AdminException;
 import com.team200.graduation_project.domain.ingredient.entity.Ingredient;
+import com.team200.graduation_project.domain.ingredient.entity.IngredientAlias;
+import com.team200.graduation_project.domain.ingredient.repository.IngredientAliasRepository;
 import com.team200.graduation_project.domain.ingredient.entity.UserIngredient;
 import com.team200.graduation_project.domain.ingredient.repository.IngredientRepository;
 import com.team200.graduation_project.domain.ingredient.repository.UserIngredientRepository;
 import com.team200.graduation_project.domain.ocr.entity.Ocr;
+import com.team200.graduation_project.domain.ocr.entity.OcrIngredient;
 import com.team200.graduation_project.domain.ocr.repository.OcrIngredientRepository;
 import com.team200.graduation_project.domain.ocr.repository.OcrRepository;
 import com.team200.graduation_project.domain.share.entity.Report;
@@ -40,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +63,7 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final IngredientRepository ingredientRepository;
+    private final IngredientAliasRepository ingredientAliasRepository;
     private final UserIngredientRepository userIngredientRepository;
     private final OcrRepository ocrRepository;
     private final OcrIngredientRepository ocrIngredientRepository;
@@ -75,6 +82,31 @@ public class AdminService {
                 .collect(Collectors.toList());
 
         ingredientRepository.saveAll(ingredients);
+    }
+
+    public String addIngredientAlias(AdminIngredientAliasRequest request) {
+        if (request == null
+                || !StringUtils.hasText(request.getAliasName())
+                || !StringUtils.hasText(request.getIngredientName())) {
+            throw new AdminException(AdminErrorCode.ADMIN_INGREDIENT_ERROR);
+        }
+
+        String normalizedAliasName = IngredientAlias.normalize(request.getAliasName());
+        if (ingredientAliasRepository.findByNormalizedAliasName(normalizedAliasName).isPresent()) {
+            return "식재료 별칭이 이미 등록되어 있습니다.";
+        }
+
+        Ingredient ingredient = ingredientRepository.findByIngredientName(request.getIngredientName().trim())
+                .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_INGREDIENT_ERROR));
+
+        ingredientAliasRepository.save(IngredientAlias.builder()
+                .aliasName(request.getAliasName().trim())
+                .normalizedAliasName(normalizedAliasName)
+                .ingredient(ingredient)
+                .source(StringUtils.hasText(request.getSource()) ? request.getSource().trim() : "admin")
+                .build());
+
+        return "식재료 별칭이 성공적으로 등록되었습니다.";
     }
 
     public AdminLoginResponse login(AdminLoginRequest request) {
@@ -371,6 +403,7 @@ public class AdminService {
 
             return ocrIngredientRepository.findAllByOcr(ocr).stream()
                     .map(ocrIngredient -> AdminOcrIngredientResponse.builder()
+                            .ocrIngredientId(ocrIngredient.getOcrIngredientId())
                             .itemName(ocrIngredient.getOcrIngredientName())
                             .quantity(ocrIngredient.getQuantity())
                             .build())
@@ -395,6 +428,61 @@ public class AdminService {
         } catch (Exception e) {
             throw new AdminException(AdminErrorCode.ADMIN_OCR_ACCURACY_UPDATE_ERROR);
         }
+    }
+
+    public String updateOcrIngredients(AdminOcrIngredientUpdateRequest request) {
+        try {
+            Ocr ocr = ocrRepository.findById(request.getOcrId())
+                    .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_UPDATE_ERROR));
+
+            if (request.getAccuracy() != null) {
+                ocr.updateAccuracy(request.getAccuracy());
+            }
+
+            if (request.getItems() != null) {
+                for (AdminOcrIngredientUpdateRequest.Item item : request.getItems()) {
+                    OcrIngredient ocrIngredient = ocrIngredientRepository.findById(item.getOcrIngredientId())
+                            .orElseThrow(() -> new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_UPDATE_ERROR));
+
+                    if (!ocrIngredient.getOcr().getOcrId().equals(ocr.getOcrId())) {
+                        throw new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_UPDATE_ERROR);
+                    }
+
+                    registerAliasFromOcrCorrection(ocrIngredient.getOcrIngredientName(), item.getItemName());
+                    ocrIngredient.update(item.getItemName(), item.getQuantity());
+                }
+            }
+
+            return "OCR 품목이 수정 완료되었습니다.";
+        } catch (AdminException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AdminException(AdminErrorCode.ADMIN_OCR_INGREDIENT_UPDATE_ERROR);
+        }
+    }
+
+    private void registerAliasFromOcrCorrection(String originalName, String correctedName) {
+        if (!StringUtils.hasText(originalName) || !StringUtils.hasText(correctedName)) {
+            return;
+        }
+        String trimmedOriginalName = originalName.trim();
+        String trimmedCorrectedName = correctedName.trim();
+        if (trimmedOriginalName.equals(trimmedCorrectedName)) {
+            return;
+        }
+
+        String normalizedAliasName = IngredientAlias.normalize(trimmedOriginalName);
+        if (ingredientAliasRepository.findByNormalizedAliasName(normalizedAliasName).isPresent()) {
+            return;
+        }
+
+        ingredientRepository.findByIngredientName(trimmedCorrectedName)
+                .ifPresent(ingredient -> ingredientAliasRepository.save(IngredientAlias.builder()
+                        .aliasName(trimmedOriginalName)
+                        .normalizedAliasName(normalizedAliasName)
+                        .ingredient(ingredient)
+                        .source("ocr_admin_review")
+                        .build()));
     }
 
     public List<AdminDataStatisticsResponse> getDataStatistics(LocalDate startDate, LocalDate endDate) {
