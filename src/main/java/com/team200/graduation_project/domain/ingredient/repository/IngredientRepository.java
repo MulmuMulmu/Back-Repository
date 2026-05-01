@@ -12,5 +12,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, UUID> {
 
     List<Ingredient> findTop10ByIngredientNameContaining(String keyword);
 
+    List<Ingredient> findByCategoryOrderByIngredientNameAsc(String category);
+
     Optional<Ingredient> findByIngredientName(String ingredientName);
 }

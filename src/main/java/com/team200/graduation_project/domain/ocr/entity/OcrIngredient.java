@@ -34,4 +34,9 @@ public class OcrIngredient {
 
     private Integer quantity;
 
+    public void update(String ocrIngredientName, Integer quantity) {
+        this.ocrIngredientName = ocrIngredientName;
+        this.quantity = quantity;
+    }
+
 }

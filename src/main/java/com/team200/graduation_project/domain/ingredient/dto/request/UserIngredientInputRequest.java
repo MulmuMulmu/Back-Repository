@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserIngredientInputRequest {
     private String ingredient;
+    private LocalDate purchaseDate;
     private LocalDate expirationDate;
     private String category;
 }

@@ -3,8 +3,11 @@ package com.team200.graduation_project.domain.ingredient.controller;
 import com.team200.graduation_project.domain.ingredient.dto.request.AllergyUpdateRequest;
 import com.team200.graduation_project.domain.ingredient.dto.request.PreferUpdateRequest;
 import com.team200.graduation_project.domain.ingredient.dto.request.UserIngredientInputRequest;
+import com.team200.graduation_project.domain.ai.client.AiClientException;
+import com.team200.graduation_project.domain.ai.dto.ExpiryPredictionRequest;
 import com.team200.graduation_project.domain.ingredient.service.IngredientService;
 import com.team200.graduation_project.domain.ingredient.dto.request.ExtraInfoRequest;
+import com.team200.graduation_project.domain.ingredient.service.IngredientExpiryPredictionService;
 import com.team200.graduation_project.domain.ingredient.service.IngredientFirstLoginService;
 import com.team200.graduation_project.domain.ingredient.service.UserIngredientService;
 import com.team200.graduation_project.global.apiPayload.ApiResponse;
@@ -30,11 +33,18 @@ public class IngredientController implements IngredientControllerDocs {
     private final IngredientService ingredientService;
     private final IngredientFirstLoginService ingredientFirstLoginService;
     private final UserIngredientService userIngredientService;
+    private final IngredientExpiryPredictionService ingredientExpiryPredictionService;
 
     @GetMapping("/search")
     @Override
     public ApiResponse<?> searchIngredients(@RequestParam String keyword) {
         return ApiResponse.onSuccess(ingredientService.searchIngredients(keyword));
+    }
+
+    @GetMapping("/category")
+    @Override
+    public ApiResponse<?> listIngredientsByCategory(@RequestParam String category) {
+        return ApiResponse.onSuccess(ingredientService.listIngredientsByCategory(category));
     }
 
     @PostMapping("/input")
@@ -43,6 +53,15 @@ public class IngredientController implements IngredientControllerDocs {
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             @RequestBody java.util.List<UserIngredientInputRequest> request) {
         return ApiResponse.onSuccess(userIngredientService.saveUserIngredients(authorizationHeader, request));
+    }
+
+    @PostMapping("/prediction")
+    public ApiResponse<?> predictIngredientExpiration(@RequestBody ExpiryPredictionRequest request) {
+        try {
+            return ApiResponse.onSuccess(ingredientExpiryPredictionService.predict(request));
+        } catch (AiClientException e) {
+            return ApiResponse.onFailure("AI500", "소비기한을 예측할 수 없습니다.");
+        }
     }
 
     @GetMapping("/all/my")

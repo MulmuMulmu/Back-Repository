@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AdminOcrIngredientResponse {
+    private UUID ocrIngredientId;
     private String itemName;
     private Integer quantity;
 }
